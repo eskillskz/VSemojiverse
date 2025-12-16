@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { fetchEmojis } from '@/services/emojiService';
 import { EmojiGroup, EmojiRaw, Locale, BlogPost, LOCALE_DATA } from '@/types';
@@ -12,11 +13,12 @@ import KaomojiCategory from '@/components/KaomojiCategory';
 import EmojiButton from '@/components/EmojiButton';
 import FloatingControls from '@/components/FloatingControls';
 import SEOSection from '@/components/SEOSection';
+import SEOHead from '@/components/SEOHead'; 
 import BlogList from '@/components/BlogList';
 import BlogPostView from '@/components/BlogPost';
 import ShareModal from '@/components/ShareModal';
 import ReactionOverlay from '@/components/ReactionOverlay';
-import Sidebar from '@/components/Sidebar';
+import Sidebar from './components/Sidebar';
 import { getSEOData } from '@/data/seoContent';
 import { KAOMOJI_DATA } from '@/data/kaomoji';
 import { UI_LABELS } from '@/data/uiTranslations';
@@ -104,39 +106,14 @@ const App: React.FC = () => {
     document.documentElement.lang = locale;
   }, [locale]);
 
+  // Analytics Handling
   useEffect(() => {
-    const seoData = getSEOData(locale, activeTab);
-    const metaDesc = document.querySelector('meta[name="description"]');
-    
-    let pageTitle = seoData.appTitle;
-    let pagePath = window.location.pathname + window.location.search;
-
-    if (viewState === 'article' && currentPost) {
-      pageTitle = `${currentPost.seoTitle || currentPost.title} - EmojiVerse`;
-      if (metaDesc) {
-        metaDesc.setAttribute('content', currentPost.seoDescription || currentPost.excerpt);
-      }
-    } else if (viewState === 'blog') {
-      pageTitle = `EmojiVerse Blog - Stories & History (${locale.toUpperCase()})`;
-      if (metaDesc) {
-        metaDesc.setAttribute('content', seoData.metaDescription);
-      }
-    } else {
-      pageTitle = seoData.appTitle;
-      if (metaDesc) {
-        metaDesc.setAttribute('content', seoData.metaDescription);
-      }
-    }
-
-    document.title = pageTitle;
-
+    const pagePath = window.location.pathname + window.location.search;
     if (typeof window.gtag === 'function') {
       window.gtag('config', 'G-XXXXXXXXXX', {
-        page_title: pageTitle,
         page_path: pagePath
       });
     }
-
   }, [locale, viewState, currentPost, activeTab]);
 
   useEffect(() => {
@@ -307,9 +284,44 @@ const App: React.FC = () => {
     );
   };
 
+  // Determine SEO data based on viewState
+  const seoContent = getSEOData(locale, activeTab);
+  let renderSEOHead;
+
+  if (viewState === 'article' && currentPost) {
+    renderSEOHead = (
+      <SEOHead 
+        title={`${currentPost.seoTitle || currentPost.title} - EmojiVerse`}
+        description={currentPost.seoDescription || currentPost.excerpt}
+        image={currentPost.image}
+        type="article"
+        currentLocale={locale}
+        slug={currentPost.slug} // PASS SLUG HERE FOR HREFLANG
+      />
+    );
+  } else if (viewState === 'blog') {
+    renderSEOHead = (
+      <SEOHead 
+        title={`EmojiVerse Blog - Stories & History (${locale.toUpperCase()})`}
+        description={seoContent.metaDescription}
+        currentLocale={locale}
+      />
+    );
+  } else {
+    renderSEOHead = (
+      <SEOHead 
+        title={seoContent.appTitle}
+        description={seoContent.metaDescription}
+        currentLocale={locale}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen pb-32 bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300 relative overflow-x-hidden w-full">
       
+      {renderSEOHead}
+
       {/* Background Ambience */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-500/20 dark:bg-indigo-500/10 rounded-full blur-[100px] -translate-x-1/3 -translate-y-1/3 animate-pulse"></div>
