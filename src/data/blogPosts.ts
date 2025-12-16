@@ -31,10 +31,12 @@ import { WHAT_DOES_THE_2026_YEAR_OF_THE_FIRE_HORSE_MEAN } from './articles/what-
 import { IS_2026_YOUR_YEAR_ARIES_NAVIGATING_LOVE_CAREER_AND_FINANCE } from './articles/is-2026-your-year-aries-navigating-love-career-and-finance';
 import { THE_ULTIMATE_LEO_HOROSCOPE_2026_NAVIGATING_THE_FIRE_HORSE } from './articles/the-ultimate-leo-horoscope-2026-navigating-the-fire-horse';
 import { SAGITTARIUS_2026_FIRE_HORSE_HOROSCOPE_A_DEEP_DIVE_INTO_LOVE_CAREER } from './articles/sagittarius-2026-fire-horse-horoscope-a-deep-dive-into-love-career';
+import { VIRGO_FIRE_HORSE_2026_HOROSCOPE_YOUR_COMPLETE_FORECAST_FOR_LOVE } from './articles/virgo-fire-horse-2026-horoscope-your-complete-forecast-for-love';
 // ==============================================================================
 // 2. REGISTER ALL ARTICLES
 // ==============================================================================
 const ARTICLES_LIST: ArticleMaster[] = [
+  VIRGO_FIRE_HORSE_2026_HOROSCOPE_YOUR_COMPLETE_FORECAST_FOR_LOVE,
   SAGITTARIUS_2026_FIRE_HORSE_HOROSCOPE_A_DEEP_DIVE_INTO_LOVE_CAREER,
   THE_ULTIMATE_LEO_HOROSCOPE_2026_NAVIGATING_THE_FIRE_HORSE,
   IS_2026_YOUR_YEAR_ARIES_NAVIGATING_LOVE_CAREER_AND_FINANCE,
