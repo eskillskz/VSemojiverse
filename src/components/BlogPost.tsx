@@ -148,11 +148,14 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
                   // Format from Generator: "IMAGE: keyword,keyword | Alt text"
                   if (paragraph.startsWith('IMAGE:')) {
                     const [keywordsPart, altTextPart] = paragraph.replace('IMAGE:', '').split('|');
-                    const keywords = keywordsPart ? keywordsPart.trim() : 'technology';
+                    const keywords = keywordsPart ? keywordsPart.trim() : 'abstract';
                     const altText = altTextPart ? altTextPart.trim() : post.title;
                     
-                    // Using LoremFlickr for random but relevant images based on keywords
-                    const imageUrl = `https://loremflickr.com/800/600/${keywords.replace(/,\s*/g, ',')}?random=${index}`;
+                    // FIXED: Switched from LoremFlickr (unreliable search) to Pollinations (reliable AI generation)
+                    const encodedPrompt = encodeURIComponent(`${keywords}, realistic, high quality, 4k`);
+                    // Use seed to keep image consistent across re-renders but unique per image block
+                    const seed = post.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) + index;
+                    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=600&nologo=true&seed=${seed}`;
 
                     return (
                         <figure key={index} className="my-10">

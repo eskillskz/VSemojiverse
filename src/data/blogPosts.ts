@@ -29,10 +29,12 @@ import { FIRE_HORSE_YEAR_COMMON_MISTAKES_ZODIAC_SIGNS_MUST_AVOID } from './artic
 import { SEO_SECRETS_REVEALED_OPTIMIZING_PRODUCT_REVIEWS_FOR_GOOGLE } from './articles/seo-secrets-revealed-optimizing-product-reviews-for-google/index';
 import { WHAT_DOES_THE_2026_YEAR_OF_THE_FIRE_HORSE_MEAN } from './articles/what-does-the-2026-year-of-the-fire-horse-mean';
 import { IS_2026_YOUR_YEAR_ARIES_NAVIGATING_LOVE_CAREER_AND_FINANCE } from './articles/is-2026-your-year-aries-navigating-love-career-and-finance';
+import { THE_ULTIMATE_LEO_HOROSCOPE_2026_NAVIGATING_THE_FIRE_HORSE } from './articles/the-ultimate-leo-horoscope-2026-navigating-the-fire-horse';
 // ==============================================================================
 // 2. REGISTER ALL ARTICLES
 // ==============================================================================
 const ARTICLES_LIST: ArticleMaster[] = [
+  THE_ULTIMATE_LEO_HOROSCOPE_2026_NAVIGATING_THE_FIRE_HORSE,
   IS_2026_YOUR_YEAR_ARIES_NAVIGATING_LOVE_CAREER_AND_FINANCE,
   WHAT_DOES_THE_2026_YEAR_OF_THE_FIRE_HORSE_MEAN,
   SEO_SECRETS_REVEALED_OPTIMIZING_PRODUCT_REVIEWS_FOR_GOOGLE,
