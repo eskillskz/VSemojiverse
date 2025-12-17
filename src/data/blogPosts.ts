@@ -1,11 +1,10 @@
-import { BlogPost, ArticleMaster, LOCALE_DATA } from '../types';
+import { BlogPost, ArticleMaster, LOCALE_DATA, Author } from '../types';
 
 // ==============================================================================
 // 1. IMPORT ARTICLES
-// We use relative paths ('./') to point to files inside 'src/data/articles'
 // ==============================================================================
 
-// --- Standard Articles (Transferred from old data) ---
+// --- Standard Articles ---
 import { INSTAGRAM_BIO_HACKS } from './articles/instagramBioHacks';
 import { EMOJI_CREATION_SECRETS } from './articles/emojiCreationSecrets';
 import { EMOJI_MARKETING_GUIDE } from './articles/emojiMarketingGuide';
@@ -23,7 +22,6 @@ import { NEW_YEAR_LYRICS_2026 } from './articles/newYearLyrics2026';
 import { NEW_YEAR_CONGRATULATORY_LYRICS_2026 } from './articles/newYearCongratulatoryLyrics2026';
 
 // --- Folder-based Articles ---
-// Note: Ensure the folder 'yearOfTheFireHorse2026' was copied to src/data/articles
 import { YEAR_OF_THE_FIRE_HORSE_2026 } from './articles/yearOfTheFireHorse2026/index';
 import { FIRE_HORSE_YEAR_COMMON_MISTAKES_ZODIAC_SIGNS_MUST_AVOID } from './articles/2026-fire-horse-year-common-mistakes-zodiac-signs-must-avoid/index';
 import { SEO_SECRETS_REVEALED_OPTIMIZING_PRODUCT_REVIEWS_FOR_GOOGLE } from './articles/seo-secrets-revealed-optimizing-product-reviews-for-google/index';
@@ -35,10 +33,13 @@ import { VIRGO_FIRE_HORSE_2026_HOROSCOPE_YOUR_COMPLETE_FORECAST_FOR_LOVE } from 
 import { GEMINI_FIRE_HORSE_2026_YOUR_ULTIMATE_GUIDE_TO_CAREER_LOVE } from './articles/gemini-fire-horse-2026-your-ultimate-guide-to-career-love';
 import { CAPRICORN_FIRE_HORSE_2026_PREDICTIONS_NAVIGATING_YOUR_PATH_TO_CAREER } from './articles/capricorn-fire-horse-2026-predictions-navigating-your-path-to-career';
 import { LIBRAS_KEY_DECISIONS_2026_STRATEGIC_CHOICES_FOR_BUSINESS_MONEY } from './articles/libras-key-decisions-2026-strategic-choices-for-business-money';
+import { AQUARIUS_2026_FIRE_HORSE_HOROSCOPE_COMPLETE_FORECAST_FOR_CAREER_LOVE } from './articles/aquarius-2026-fire-horse-horoscope-complete-forecast-for-career-love';
+
 // ==============================================================================
 // 2. REGISTER ALL ARTICLES
 // ==============================================================================
 const ARTICLES_LIST: ArticleMaster[] = [
+  AQUARIUS_2026_FIRE_HORSE_HOROSCOPE_COMPLETE_FORECAST_FOR_CAREER_LOVE,
   LIBRAS_KEY_DECISIONS_2026_STRATEGIC_CHOICES_FOR_BUSINESS_MONEY,
   CAPRICORN_FIRE_HORSE_2026_PREDICTIONS_NAVIGATING_YOUR_PATH_TO_CAREER,
   GEMINI_FIRE_HORSE_2026_YOUR_ULTIMATE_GUIDE_TO_CAREER_LOVE,
@@ -48,7 +49,7 @@ const ARTICLES_LIST: ArticleMaster[] = [
   IS_2026_YOUR_YEAR_ARIES_NAVIGATING_LOVE_CAREER_AND_FINANCE,
   WHAT_DOES_THE_2026_YEAR_OF_THE_FIRE_HORSE_MEAN,
   SEO_SECRETS_REVEALED_OPTIMIZING_PRODUCT_REVIEWS_FOR_GOOGLE,
-  FIRE_HORSE_YEAR_COMMON_MISTAKES_ZODIAC_SIGNS_MUST_AVOID, // Newest first
+  FIRE_HORSE_YEAR_COMMON_MISTAKES_ZODIAC_SIGNS_MUST_AVOID, 
   YEAR_OF_THE_FIRE_HORSE_2026,
   NEW_YEAR_CONGRATULATORY_LYRICS_2026,
   NEW_YEAR_LYRICS_2026,
@@ -68,15 +69,81 @@ const ARTICLES_LIST: ArticleMaster[] = [
 ];
 
 // ==============================================================================
+// 3. AUTHORS CONFIGURATION (Virtual Authors)
+// ==============================================================================
+const AUTHORS: Author[] = [
+  {
+    id: 'sarah',
+    name: 'Sarah Jenkins',
+    role: 'Content Strategist',
+    // AI generated professional face
+    avatar: 'https://image.pollinations.ai/prompt/professional%20woman%20portrait%20smiling%20glasses%20marketing%20manager%20linkedin%20profile%20white%20background?width=200&height=200&seed=101&nologo=true'
+  },
+  {
+    id: 'david',
+    name: 'David Chen',
+    role: 'Emoji Historian',
+    avatar: 'https://image.pollinations.ai/prompt/professional%20asian%20man%20portrait%20tech%20writer%20smart%20casual%20studio%20lighting?width=200&height=200&seed=202&nologo=true'
+  },
+  {
+    id: 'maria',
+    name: 'Maria Rodriguez',
+    role: 'Social Media Expert',
+    avatar: 'https://image.pollinations.ai/prompt/creative%20latina%20woman%20portrait%20designer%20colorful%20clothing%20bright%20smile?width=200&height=200&seed=303&nologo=true'
+  }
+];
+
+// Helper: Calculate Read Time based on actual content length
+const calculateReadTime = (content: string[]): string => {
+  const text = content.join(' ');
+  const wordCount = text.split(/\s+/).length;
+  // Average reading speed: 200 words per minute
+  const minutes = Math.ceil(wordCount / 200);
+  // Ensure at least 1 min
+  return `${Math.max(1, minutes)} min read`;
+};
+
+// Helper: Get a deterministic author based on article slug
+const getAuthorForArticle = (slug: string): Author => {
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) {
+    hash = slug.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % AUTHORS.length;
+  return AUTHORS[index];
+};
+
+// Helper: Generate a deterministic "recent" date (2025 context)
+// This ensures the date doesn't change on every refresh (good for SEO),
+// but looks like a distinct date for each article.
+const getDateForArticle = (slug: string): string => {
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) {
+    hash = slug.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  // Base date: Oct 1, 2025
+  const baseTime = new Date('2025-10-01').getTime();
+  // Add random days between 0 and 60 based on slug hash
+  const randomDays = Math.abs(hash) % 60; 
+  const targetDate = new Date(baseTime + (randomDays * 24 * 60 * 60 * 1000));
+  
+  // Format: "Oct 24, 2025"
+  return targetDate.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+};
+
+// ==============================================================================
 // SYSTEM LOGIC (Generates the Blog Posts)
 // ==============================================================================
 export const BLOG_POSTS: BlogPost[] = [];
 
-ARTICLES_LIST.forEach((article, index) => {
+ARTICLES_LIST.forEach((article) => {
   // Safety check to prevent crashing if an import fails or is undefined
-  if (!article) {
-    return;
-  }
+  if (!article) return;
 
   LOCALE_DATA.forEach(localeInfo => {
     const loc = localeInfo.code;
@@ -96,9 +163,10 @@ ARTICLES_LIST.forEach((article, index) => {
         content: Array.isArray(content.content) ? content.content : [],
         category: article.category || 'General',
         
-        // These fields are required by the UI design
-        date: "2024", 
-        readTime: "5 min", 
+        // --- DYNAMIC FIELDS ---
+        date: getDateForArticle(article.slug),
+        readTime: calculateReadTime(Array.isArray(content.content) ? content.content : []),
+        author: getAuthorForArticle(article.slug),
         
         image: article.image,
         imageAlt: content.title,

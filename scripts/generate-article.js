@@ -1,4 +1,3 @@
-
 import { GoogleGenAI } from "@google/genai";
 import fs from 'fs';
 import path from 'path';
@@ -31,19 +30,16 @@ if (!rawContent.trim()) {
   process.exit(1);
 }
 
-// --- PREVIEW INPUT (Safety Check) ---
+// --- PREVIEW INPUT ---
 console.log(`\n📄 Reading 'input.txt'...`);
 console.log(`👀 CONTENT PREVIEW (First 100 chars):\n"${rawContent.substring(0, 100).replace(/\n/g, ' ')}..."\n`);
-console.log(`(If this is the OLD text, please save input.txt and run again)\n`);
 
 // --- SLUG GENERATION ---
 let slug = process.argv[2];
 if (!slug) {
-  // Use first line, but ignore SEO_DESC if present
   let firstLine = rawContent.split('\n')[0].trim();
   if (firstLine.startsWith('SEO_DESC:')) {
      const lines = rawContent.split('\n');
-     // Find first line that isn't SEO_DESC and isn't empty
      for (let line of lines) {
         if (!line.startsWith('SEO_DESC:') && line.trim().length > 0) {
             firstLine = line.trim();
@@ -69,9 +65,23 @@ const ai = new GoogleGenAI({ apiKey: apiKey });
 const articleDir = path.join(rootDir, 'src', 'data', 'articles', slug);
 if (!fs.existsSync(articleDir)) fs.mkdirSync(articleDir, { recursive: true });
 
+// --- HELPER: Delay ---
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// --- HELPER: Clean and Parse JSON ---
+function cleanAndParseJSON(text) {
+  let cleaned = text.trim();
+  if (cleaned.startsWith('```json')) {
+    cleaned = cleaned.replace(/^```json/, '').replace(/```$/, '');
+  } else if (cleaned.startsWith('```')) {
+    cleaned = cleaned.replace(/^```/, '').replace(/```$/, '');
+  }
+  return JSON.parse(cleaned);
+}
+
 // --- STEP 1: Generate Master Content (English + Meta) ---
 async function generateMaster() {
-  console.log(`🚀 Step 1/3: Generating Main Content (English) with SEO Images & Cover...`);
+  console.log(`🚀 Step 1/3: Generating Main Content (English) with Tables & Images...`);
   
   const prompt = `
   You are an expert CMS Content Generator and SEO Specialist.
@@ -83,39 +93,54 @@ async function generateMaster() {
   REQUIREMENTS:
   1. Language: English (en).
   2. Create a catchy SEO title.
-  3. **SEO DESCRIPTION RULE**: Check if the input text starts with "SEO_DESC:". 
-     - IF YES: Use the text immediately following "SEO_DESC:" exactly as provided.
-     - IF NO: Generate a short, engaging SEO description.
-  4. Format content as an array of strings (paragraphs). Use '## ' for headers.
-  5. Select a Category: 'Instagram', 'Emoji', 'Business', 'History', or 'Astrology'.
-  6. Generate a Tailwind CSS gradient string (e.g., 'from-blue-500 to-cyan-500').
+  3. **SEO DESCRIPTION**: Check if input starts with "SEO_DESC:". If yes, use it. If no, generate one.
+  4. **CONTENT STRUCTURE**: 
+     - Format content as an array of strings.
+     - Use '## ' for headers.
+     - Use standard paragraphs.
   
-  **7. IMAGE INSERTION (INTERNAL):**
-     - Insert 2 to 5 images randomly throughout the 'content' array.
-     - Format: "IMAGE: keyword1,keyword2 | Alt text"
+  5. **HANDLING TABLES (CRITICAL)**: 
+     - If you detect tabular data in the input (Comparison lists, CSV data, or Markdown tables), DO NOT output a Markdown table.
+     - Instead, convert it into a **Responsive HTML Table String** as a single item in the content array.
+     - **Format**: Wrap the table in \`<div class="overflow-x-auto my-6">\`.
+     - Style the \`<table>\` with Tailwind classes: \`min-w-full divide-y divide-gray-200 border\`.
+     - Style \`<th>\` with \`bg-gray-50 px-4 py-2 text-left font-semibold text-gray-900\`.
+     - Style \`<td>\` with \`px-4 py-2 border-t\`.
   
-  **8. COVER IMAGE PROMPT (IMPORTANT):**
-     - Generate a specific, descriptive English prompt for the MAIN cover image. 
-     - It should describe a high-quality, professional stock photo style image relevant to the topic.
-     - Example: "minimalist workspace with laptop and coffee, soft lighting, 4k" or "futuristic neon interface with emojis, dark background, cyberpunk style"
-     - Field name: "coverImagePrompt"
+  6. **IMAGES**:
+     - Insert 2 to 5 images randomly (format: "IMAGE: keyword | Alt text").
+  
+  7. **METADATA**:
+     - Category: 'Instagram', 'Emoji', 'Business', 'History', or 'Astrology'.
+     - Gradient: Tailwind CSS string (e.g. 'from-blue-500 to-purple-500').
+     - **Cover Image Prompt**: Detailed English description for a stock photo.
 
   OUTPUT JSON FORMAT:
   {
     "meta": { "category": "...", "gradient": "...", "coverImagePrompt": "..." },
-    "content": { "title": "...", "seoTitle": "...", "excerpt": "...", "seoDescription": "...", "content": ["Para 1", "IMAGE: ...", "## Header"] }
+    "content": { "title": "...", "seoTitle": "...", "excerpt": "...", "seoDescription": "...", "content": ["Para 1", "<div class=...><table...>...</table></div>", "## Header"] }
   }
   `;
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: prompt,
-    config: { responseMimeType: "application/json" }
-  });
+  const MAX_RETRIES = 3;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: prompt,
+        config: { responseMimeType: "application/json" }
+      });
 
-  const text = response.text;
-  if (!text) throw new Error("Empty response from AI for Master Content");
-  return JSON.parse(text);
+      const text = response.text;
+      if (!text) throw new Error("Empty response from AI");
+      return cleanAndParseJSON(text);
+
+    } catch (e) {
+      console.warn(`   ⚠️ Master Generation Attempt ${attempt}/${MAX_RETRIES} failed: ${e.message}`);
+      if (attempt === MAX_RETRIES) throw new Error("Failed to generate master content.");
+      await delay(3000);
+    }
+  }
 }
 
 // --- STEP 2: Translate Content ---
@@ -123,48 +148,52 @@ async function translateTo(lang, masterContent) {
   console.log(`   ... Translating to '${lang}'`);
   
   const prompt = `
-  Translate the following JSON content to language code: '${lang}'.
-  Keep the JSON structure exactly the same.
+  Translate the JSON content to language code: '${lang}'.
+  Keep structure EXACTLY same.
   
-  IMPORTANT RULES:
-  1. Translate 'seoDescription', 'excerpt', paragraphs, and headers.
-  2. **HANDLE IMAGES**: 
-     - Find strings starting with "IMAGE:".
-     - Keep "IMAGE:" prefix and keywords (first part) in ENGLISH.
-     - TRANSLATE ONLY the Alt Text (part after "|").
+  RULES:
+  1. Translate text fields (paragraphs, headers, seoDescription).
+  2. **IMAGES**: Keep "IMAGE: keyword |" in English. Translate only the ALT text after "|".
+  3. **TABLES (HTML)**: 
+     - If you find an HTML string (starting with \`<div\` or \`<table\`), **DO NOT translate the HTML tags** (class names, div, tr, td).
+     - **ONLY translate the visible text content** inside the \`<th>\` and \`<td>\` tags.
   
   SOURCE JSON:
   ${JSON.stringify(masterContent)}
   `;
 
-  try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: { responseMimeType: "application/json" }
-    });
+  const MAX_RETRIES = 3;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: prompt,
+        config: { responseMimeType: "application/json" }
+      });
 
-    const text = response.text;
-    if (!text) return null;
-    return JSON.parse(text);
-  } catch (e) {
-    console.warn(`   ⚠️ Failed to translate to ${lang}:`, e.message);
-    return null;
+      const text = response.text;
+      if (!text) throw new Error("Empty response");
+      return cleanAndParseJSON(text);
+
+    } catch (e) {
+      console.warn(`      ⚠️ Error translating to ${lang} (Attempt ${attempt}): ${e.message}`);
+      if (attempt < MAX_RETRIES) await delay(3000);
+      else return null;
+    }
   }
 }
 
 // --- MAIN FLOW ---
 async function main() {
   try {
-    // 1. Generate English Master
     const masterData = await generateMaster();
     
-    // Save English File
+    // Save English
     const enContent = `import { ArticleContent } from '../../../types';\nexport const en: ArticleContent = ${JSON.stringify(masterData.content, null, 2)};`;
     fs.writeFileSync(path.join(articleDir, `en.ts`), enContent);
     console.log(`   ✅ Saved en.ts`);
 
-    // 2. Translate to others
+    // Translate
     const TARGET_LANGUAGES = ['ru', 'es', 'fr', 'de', 'it', 'pt', 'zh', 'ja', 'ko', 'ar', 'hi', 'kk'];
     const availableLangs = ['en'];
 
@@ -177,16 +206,10 @@ async function main() {
       }
     }
 
-    // 3. Generate Index with Auto-Generated Cover Image
+    // Index & Cover Image
     const varName = slug.replace(/-/g, '_').toUpperCase().replace(/[^A-Z0-9_]/g, '');
-    
-    // Construct Dynamic Image URL using Pollinations (Unsplash style)
-    // We encode the prompt to ensure it works in a URL
     const rawPrompt = masterData.meta.coverImagePrompt || "abstract technology background";
     const encodedPrompt = encodeURIComponent(`${rawPrompt}, high quality, 4k, professional stock photo, unsplash style`);
-    
-    // Using a seed (random number) ensures we get a consistent image for this specific generation run, 
-    // but a unique one if we regenerate.
     const seed = Math.floor(Math.random() * 10000);
     const coverImageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1200&height=630&nologo=true&seed=${seed}`;
 
@@ -196,7 +219,7 @@ ${availableLangs.map(l => `import { ${l} } from './${l}';`).join('\n')}
 
 export const ${varName}: ArticleMaster = {
   slug: '${slug}',
-  image: '${coverImageUrl}', // Auto-generated Unsplash-style image
+  image: '${coverImageUrl}',
   category: '${masterData.meta.category}',
   gradient: '${masterData.meta.gradient}',
   locales: {
@@ -207,11 +230,8 @@ export const ${varName}: ArticleMaster = {
     fs.writeFileSync(path.join(articleDir, 'index.ts'), indexContent);
 
     console.log(`\n🎉 SUCCESS! Article generated at: src/data/articles/${slug}`);
-    console.log(`   🖼️ Cover Image Auto-Generated: "${masterData.meta.coverImagePrompt}"`);
-    console.log(`\n👇 FINAL STEP:`);
-    console.log(`   Add this line to 'src/data/blogPosts.ts':`);
-    console.log(`   import { ${varName} } from './articles/${slug}/index';`);
-    console.log(`   ... and add '${varName}' to the ARTICLES_LIST array.`);
+    console.log(`   🖼️ Cover Image Prompt: "${masterData.meta.coverImagePrompt}"`);
+    console.log(`   👇 FINAL STEP: Add '${varName}' to src/data/blogPosts.ts`);
 
   } catch (error) {
     console.error("\n❌ FATAL ERROR:", error);

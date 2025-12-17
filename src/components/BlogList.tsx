@@ -1,8 +1,7 @@
-
 import React, { useEffect, useState } from 'react';
 import { BlogPost, Locale } from '@/types';
 import { BLOG_POSTS } from '@/data/blogPosts'; 
-import { ArrowRight, BookOpen, Home, Loader2, ChevronDown } from 'lucide-react';
+import { ArrowRight, BookOpen, Home, Loader2, ChevronDown, Calendar, Clock } from 'lucide-react';
 import { UI_LABELS } from '@/data/uiTranslations';
 import AdUnit from './AdUnit'; 
 
@@ -158,10 +157,17 @@ const BlogList: React.FC<BlogListProps> = ({ locale, onReadPost, onBackToHome })
                 </div>
 
                 <div className="p-6 flex-1 flex flex-col">
-                  <div className="flex items-center gap-2 text-xs text-slate-400 mb-3 font-bold uppercase tracking-wider">
-                    <span>2024</span>
+                  {/* Metadata Row */}
+                  <div className="flex items-center gap-3 text-xs text-slate-400 mb-3 font-bold uppercase tracking-wider">
+                    <div className="flex items-center gap-1">
+                      <Calendar size={12} />
+                      <span>{post.date}</span>
+                    </div>
                     <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-                    <span>{post.readTime || '5 min'}</span>
+                    <div className="flex items-center gap-1">
+                      <Clock size={12} />
+                      <span>{post.readTime}</span>
+                    </div>
                   </div>
 
                   <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-3 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2 leading-tight">
@@ -172,8 +178,16 @@ const BlogList: React.FC<BlogListProps> = ({ locale, onReadPost, onBackToHome })
                     {post.excerpt}
                   </p>
 
-                  <div className="flex items-center font-bold text-sm text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mt-auto">
-                    Read Story <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  <div className="flex items-center justify-between mt-auto">
+                    {/* Author Mini Info */}
+                    <div className="flex items-center gap-2">
+                       <img src={post.author.avatar} alt={post.author.name} className="w-6 h-6 rounded-full object-cover border border-slate-200" />
+                       <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{post.author.name}</span>
+                    </div>
+
+                    <div className="flex items-center font-bold text-sm text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                      Read <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </div>
                 </div>
               </a>

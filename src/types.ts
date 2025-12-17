@@ -1,4 +1,3 @@
-
 export type Locale = 
   | 'en' | 'es' | 'ru' | 'zh' | 'ko' | 'ja' 
   | 'fr' | 'it' | 'kk' | 'ar' | 'hi' | 'pt' | 'de';
@@ -62,6 +61,13 @@ export const LOCALE_DATA: { code: Locale; label: string; flag: string }[] = [
   { code: 'kk', label: 'Қазақ', flag: '🇰🇿' },
 ];
 
+export interface Author {
+  id: string;
+  name: string;
+  role: string;
+  avatar: string; // URL to image
+}
+
 export interface BlogPost {
   id: string;
   slug: string; 
@@ -72,8 +78,9 @@ export interface BlogPost {
   excerpt: string;
   seoDescription?: string;
   content: string[]; 
-  date?: string;     
-  readTime?: string; 
+  date: string;       // Changed to required string
+  readTime: string;   // Changed to required string
+  author: Author;     // Added Author field
   imageGradient: string; 
   image?: string;    
   imageAlt?: string; 

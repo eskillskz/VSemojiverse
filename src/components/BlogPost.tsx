@@ -1,8 +1,7 @@
-
 import React, { useEffect, useState, useMemo } from 'react';
 import { BlogPost, Locale } from '@/types';
 import { BLOG_POSTS } from '@/data/blogPosts';
-import { ArrowLeft, Share2, Home, ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowLeft, Share2, Home, ArrowRight, Sparkles, Calendar, Clock } from 'lucide-react';
 import { UI_LABELS } from '@/data/uiTranslations';
 import ShareModal from './ShareModal';
 import AdUnit from './AdUnit'; 
@@ -52,10 +51,10 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
     "description": post.seoDescription || post.excerpt,
     "image": post.image ? [post.image] : [],
     "author": {
-      "@type": "Organization",
-      "name": "EmojiVerse Team"
+      "@type": "Person",
+      "name": post.author.name
     },
-    "datePublished": post.date || "2024-01-01",
+    "datePublished": post.date, // Using dynamic date
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": `https://emojiverse.netlify.app/?post=${post.slug}`
@@ -133,9 +132,35 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
                     )}
                 </div>
                 
-                <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 leading-tight tracking-tight border-b border-slate-100 dark:border-slate-800 pb-8">
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 leading-tight tracking-tight">
                     {post.title}
                 </h1>
+
+                {/* --- AUTHOR & DATE METADATA --- */}
+                <div className="flex flex-wrap items-center gap-6 pb-8 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center gap-3">
+                    <img src={post.author.avatar} alt={post.author.name} className="w-12 h-12 rounded-full object-cover border-2 border-white dark:border-slate-700 shadow-sm" />
+                    <div>
+                      <p className="font-bold text-slate-900 dark:text-white text-sm">{post.author.name}</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-xs">{post.author.role}</p>
+                    </div>
+                  </div>
+
+                  <div className="w-px h-10 bg-slate-200 dark:bg-slate-800 hidden sm:block"></div>
+
+                  <div className="flex items-center gap-4 text-sm font-medium text-slate-500 dark:text-slate-400">
+                     <div className="flex items-center gap-1.5">
+                        <Calendar size={16} className="text-indigo-500" />
+                        <span>{post.date}</span>
+                     </div>
+                     <div className="flex items-center gap-1.5">
+                        <Clock size={16} className="text-indigo-500" />
+                        <span>{post.readTime}</span>
+                     </div>
+                  </div>
+                </div>
+                {/* ------------------------------ */}
+
             </div>
 
             <AdUnit slotId="article-top" />
@@ -145,15 +170,12 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
                   if (!paragraph) return null;
 
                   // --- IMAGE RENDERING LOGIC ---
-                  // Format from Generator: "IMAGE: keyword,keyword | Alt text"
                   if (paragraph.startsWith('IMAGE:')) {
                     const [keywordsPart, altTextPart] = paragraph.replace('IMAGE:', '').split('|');
                     const keywords = keywordsPart ? keywordsPart.trim() : 'abstract';
                     const altText = altTextPart ? altTextPart.trim() : post.title;
                     
-                    // FIXED: Switched from LoremFlickr (unreliable search) to Pollinations (reliable AI generation)
                     const encodedPrompt = encodeURIComponent(`${keywords}, realistic, high quality, 4k`);
-                    // Use seed to keep image consistent across re-renders but unique per image block
                     const seed = post.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) + index;
                     const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=600&nologo=true&seed=${seed}`;
 
@@ -172,6 +194,17 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
                     );
                   }
                   
+                  // HTML CONTENT (Tables)
+                  if (paragraph.trim().startsWith('<div') || paragraph.trim().startsWith('<table')) {
+                    return (
+                      <div 
+                        key={index} 
+                        dangerouslySetInnerHTML={{ __html: paragraph }} 
+                        className="my-8"
+                      />
+                    );
+                  }
+
                   // Headers
                   if (paragraph.startsWith('## ')) {
                     return <h2 key={index} className="text-2xl md:text-3xl font-extrabold mt-10 mb-6 text-slate-900 dark:text-white">{paragraph.replace('## ', '')}</h2>;
@@ -235,8 +268,11 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
                               <h4 className="font-bold text-lg text-slate-800 dark:text-slate-200 mb-2 line-clamp-2 group-hover:text-indigo-500 transition-colors">
                                   {recPost.title}
                               </h4>
-                              <div className="mt-auto pt-4 flex items-center text-sm font-bold text-indigo-600 dark:text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
-                                  Read <ArrowRight size={14} className="ml-1" />
+                              <div className="flex items-center justify-between mt-auto pt-4 text-xs text-slate-500">
+                                  <span>{recPost.date}</span>
+                                  <div className="flex items-center text-indigo-600 dark:text-indigo-400 font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                                      Read <ArrowRight size={14} className="ml-1" />
+                                  </div>
                               </div>
                           </div>
                       </div>
