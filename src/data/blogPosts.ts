@@ -34,10 +34,12 @@ import { SAGITTARIUS_2026_FIRE_HORSE_HOROSCOPE_A_DEEP_DIVE_INTO_LOVE_CAREER } fr
 import { VIRGO_FIRE_HORSE_2026_HOROSCOPE_YOUR_COMPLETE_FORECAST_FOR_LOVE } from './articles/virgo-fire-horse-2026-horoscope-your-complete-forecast-for-love';
 import { GEMINI_FIRE_HORSE_2026_YOUR_ULTIMATE_GUIDE_TO_CAREER_LOVE } from './articles/gemini-fire-horse-2026-your-ultimate-guide-to-career-love';
 import { CAPRICORN_FIRE_HORSE_2026_PREDICTIONS_NAVIGATING_YOUR_PATH_TO_CAREER } from './articles/capricorn-fire-horse-2026-predictions-navigating-your-path-to-career';
+import { LIBRAS_KEY_DECISIONS_2026_STRATEGIC_CHOICES_FOR_BUSINESS_MONEY } from './articles/libras-key-decisions-2026-strategic-choices-for-business-money';
 // ==============================================================================
 // 2. REGISTER ALL ARTICLES
 // ==============================================================================
 const ARTICLES_LIST: ArticleMaster[] = [
+  LIBRAS_KEY_DECISIONS_2026_STRATEGIC_CHOICES_FOR_BUSINESS_MONEY,
   CAPRICORN_FIRE_HORSE_2026_PREDICTIONS_NAVIGATING_YOUR_PATH_TO_CAREER,
   GEMINI_FIRE_HORSE_2026_YOUR_ULTIMATE_GUIDE_TO_CAREER_LOVE,
   VIRGO_FIRE_HORSE_2026_HOROSCOPE_YOUR_COMPLETE_FORECAST_FOR_LOVE,
