@@ -11,8 +11,6 @@ import { zh } from './zh';
 import { ja } from './ja';
 import { ko } from './ko';
 import { ar } from './ar';
-import { hi } from './hi';
-import { kk } from './kk';
 
 export const FINANCIAL_STABILITY_FOR_CANCER_IN_2026_FIRE_HORSE_INVESTMENT_INSIGHTS: ArticleMaster = {
   slug: 'financial-stability-for-cancer-in-2026-fire-horse-investment-insights',
@@ -30,8 +28,6 @@ export const FINANCIAL_STABILITY_FOR_CANCER_IN_2026_FIRE_HORSE_INVESTMENT_INSIGH
     zh,
     ja,
     ko,
-    ar,
-    hi,
-    kk
+    ar
   }
 };
