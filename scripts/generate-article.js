@@ -4,12 +4,12 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
-// Paths
+// ---------- PATHS ----------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
-// Env
+// ---------- ENV ----------
 dotenv.config({ path: path.join(rootDir, '.env') });
 
 const apiKey = process.env.API_KEY;
@@ -18,7 +18,7 @@ if (!apiKey) {
   process.exit(1);
 }
 
-// Input
+// ---------- INPUT ----------
 const inputPath = path.join(rootDir, 'input.txt');
 if (!fs.existsSync(inputPath)) {
   console.error("❌ ERROR: input.txt not found.");
@@ -34,7 +34,7 @@ if (!rawContent.trim()) {
 console.log(`📄 Reading input.txt`);
 console.log(`👀 Preview: "${rawContent.substring(0, 100).replace(/\n/g, ' ')}..."`);
 
-// Slug
+// ---------- SLUG ----------
 let slug = process.argv[2];
 if (!slug) {
   let firstLine = rawContent.split('\n').find(l => l.trim() && !l.startsWith('SEO_DESC:'));
@@ -43,124 +43,133 @@ if (!slug) {
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+$/g, '');
-
-  if (!slug) {
-    console.error("❌ ERROR: Could not auto-generate slug.");
-    process.exit(1);
-  }
 }
 
-const ai = new GoogleGenAI({ apiKey });
 const articleDir = path.join(rootDir, 'src', 'data', 'articles', slug);
 fs.mkdirSync(articleDir, { recursive: true });
 
-// Utils
-const delay = (ms) => new Promise(r => setTimeout(r, ms));
+const ai = new GoogleGenAI({ apiKey });
 
-function cleanAndParseJSON(text) {
-  let cleaned = text.trim()
-    .replace(/^```json/, '')
-    .replace(/^```/, '')
-    .replace(/```$/, '');
+// ---------- HELPERS ----------
+const delay = ms => new Promise(r => setTimeout(r, ms));
+
+function extractJSON(text) {
+  let cleaned = text.trim();
+  if (cleaned.startsWith('```')) {
+    cleaned = cleaned.replace(/^```(?:json)?/, '').replace(/```$/, '').trim();
+  }
   return JSON.parse(cleaned);
 }
 
-// 🔒 CRITICAL: normalize content → ONLY string[]
-function normalizeContentArray(input) {
-  if (!Array.isArray(input)) return [];
-
-  return input.map(item => {
-    if (typeof item === 'string') return item;
-
-    if (typeof item === 'object' && item !== null) {
-      const key = Object.keys(item)[0] || 'SECTION';
-      return `[SECTION: ${key}]\n${JSON.stringify(item[key], null, 2)}`;
-    }
-
-    return String(item);
-  });
-}
-
-// Step 1
+// ---------- STEP 1 ----------
 async function generateMaster() {
+  console.log(`🚀 Generating English master content...`);
+
   const prompt = `
-You are an expert CMS Content Generator.
+You are an expert CMS Content Generator and SEO Specialist.
 
-STRICT RULES:
-- content.content MUST be an array of STRINGS
-- NEVER output objects or named keys inside content array
-- Interactive blocks (FAQ, accordion) MUST be plain text strings
-
-INPUT:
+INPUT TEXT:
 "${rawContent}"
 
-OUTPUT JSON:
+RULES (CRITICAL):
+- DO NOT rewrite or shorten the content meaningfully.
+- Preserve ALL custom markers such as [ACCORDION] and [/ACCORDION] exactly as-is.
+- Output valid JSON ONLY.
+- content.content must be an ARRAY OF STRINGS.
+- HTML tables are allowed as strings.
+- DO NOT create objects inside content.content.
+
+TABLES:
+- Convert detected tables to HTML wrapped in:
+  <div class="overflow-x-auto my-6">
+- Table classes:
+  table: min-w-full border border-gray-200
+  th: bg-gray-800 text-white px-4 py-2 text-left
+  td: px-4 py-2 border-t text-gray-800
+
+IMAGES:
+- Use: "IMAGE: keyword | Alt text"
+
+OUTPUT FORMAT:
 {
-  "meta": { "category": "...", "gradient": "...", "coverImagePrompt": "..." },
+  "meta": {
+    "category": "...",
+    "gradient": "...",
+    "coverImagePrompt": "..."
+  },
   "content": {
     "title": "...",
     "seoTitle": "...",
     "excerpt": "...",
     "seoDescription": "...",
-    "content": ["string only"]
+    "content": ["string", "string"]
   }
 }
 `;
 
-  for (let i = 1; i <= 3; i++) {
+  const MAX_RETRIES = 4;
+
+  for (let i = 1; i <= MAX_RETRIES; i++) {
     try {
       const res = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: { responseMimeType: "application/json" }
+        contents: prompt
       });
 
-      const parsed = cleanAndParseJSON(res.text);
-      parsed.content.content = normalizeContentArray(parsed.content.content);
-      return parsed;
+      const text = res.text;
+      if (!text) throw new Error("Empty AI response");
+
+      return extractJSON(text);
 
     } catch (e) {
-      console.warn(`⚠️ Attempt ${i} failed: ${e.message}`);
-      if (i === 3) throw e;
+      console.warn(`⚠️ Master attempt ${i} failed: ${e.message}`);
+      if (i === MAX_RETRIES) throw e;
       await delay(3000);
     }
   }
 }
 
-// Translation
-async function translateTo(lang, content) {
-  const prompt = `
-Translate JSON to ${lang}.
-KEEP STRUCTURE.
-DO NOT add keys.
-Return valid JSON only.
+// ---------- STEP 2 ----------
+async function translateTo(lang, masterContent) {
+  console.log(`   🌍 Translating to ${lang}`);
 
-SOURCE:
-${JSON.stringify(content)}
+  const prompt = `
+Translate the JSON below to "${lang}".
+
+STRICT RULES:
+- Keep JSON structure IDENTICAL.
+- Preserve [ACCORDION] markers unchanged.
+- Do NOT translate HTML tags or class names.
+- Translate only visible text.
+
+SOURCE JSON:
+${JSON.stringify(masterContent)}
 `;
 
-  for (let i = 1; i <= 3; i++) {
+  const MAX_RETRIES = 3;
+
+  for (let i = 1; i <= MAX_RETRIES; i++) {
     try {
       const res = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: { responseMimeType: "application/json" }
+        contents: prompt
       });
 
-      const parsed = cleanAndParseJSON(res.text);
-      parsed.content = normalizeContentArray(parsed.content);
-      return parsed;
+      const text = res.text;
+      if (!text) throw new Error("Empty response");
+
+      return extractJSON(text);
 
     } catch (e) {
       console.warn(`⚠️ ${lang} attempt ${i} failed`);
-      if (i === 3) return null;
-      await delay(3000);
+      if (i === MAX_RETRIES) return null;
+      await delay(2500);
     }
   }
 }
 
-// Main
-(async function main() {
+// ---------- MAIN ----------
+async function main() {
   try {
     const master = await generateMaster();
 
@@ -169,23 +178,30 @@ ${JSON.stringify(content)}
       `import { ArticleContent } from '../../../types';\nexport const en: ArticleContent = ${JSON.stringify(master.content, null, 2)};`
     );
 
+    console.log(`✅ Saved en.ts`);
+
     const langs = ['ru','es','fr','de','it','pt','zh','ja','ko','ar','hi','kk'];
     const available = ['en'];
 
     for (const lang of langs) {
-      const t = await translateTo(lang, master.content);
-      if (!t) continue;
+      const translated = await translateTo(lang, master.content);
+      if (!translated) continue;
 
       fs.writeFileSync(
         path.join(articleDir, `${lang}.ts`),
-        `import { ArticleContent } from '../../../types';\nexport const ${lang}: ArticleContent = ${JSON.stringify(t, null, 2)};`
+        `import { ArticleContent } from '../../../types';\nexport const ${lang}: ArticleContent = ${JSON.stringify(translated, null, 2)};`
       );
+
       available.push(lang);
     }
 
     const varName = slug.replace(/-/g, '_').toUpperCase();
-    const cover = encodeURIComponent(master.meta.coverImagePrompt || 'abstract');
-    const seed = Math.floor(Math.random() * 10000);
+
+    const imgPrompt = encodeURIComponent(
+      `${master.meta.coverImagePrompt}, professional stock photo, 4k`
+    );
+
+    const imageUrl = `https://image.pollinations.ai/prompt/${imgPrompt}?width=1200&height=630&nologo=true`;
 
     fs.writeFileSync(
       path.join(articleDir, 'index.ts'),
@@ -195,18 +211,21 @@ ${available.map(l => `import { ${l} } from './${l}';`).join('\n')}
 
 export const ${varName}: ArticleMaster = {
   slug: '${slug}',
-  image: 'https://image.pollinations.ai/prompt/${cover}?width=1200&height=630&seed=${seed}',
+  image: '${imageUrl}',
   category: '${master.meta.category}',
   gradient: '${master.meta.gradient}',
-  locales: { ${available.join(', ')} }
+  locales: {
+    ${available.join(',\n    ')}
+  }
 };
 `
     );
 
-    console.log(`🎉 SUCCESS: ${slug}`);
+    console.log(`🎉 Article generated successfully`);
 
   } catch (e) {
     console.error("❌ FATAL:", e);
-    process.exit(1);
   }
-})();
+}
+
+main();
