@@ -34,11 +34,13 @@ import { GEMINI_FIRE_HORSE_2026_YOUR_ULTIMATE_GUIDE_TO_CAREER_LOVE } from './art
 import { CAPRICORN_FIRE_HORSE_2026_PREDICTIONS_NAVIGATING_YOUR_PATH_TO_CAREER } from './articles/capricorn-fire-horse-2026-predictions-navigating-your-path-to-career';
 import { LIBRAS_KEY_DECISIONS_2026_STRATEGIC_CHOICES_FOR_BUSINESS_MONEY } from './articles/libras-key-decisions-2026-strategic-choices-for-business-money';
 import { AQUARIUS_2026_FIRE_HORSE_HOROSCOPE_COMPLETE_FORECAST_FOR_CAREER_LOVE } from './articles/aquarius-2026-fire-horse-horoscope-complete-forecast-for-career-love';
+import { FINANCIAL_STABILITY_FOR_CANCER_IN_2026_FIRE_HORSE_INVESTMENT_INSIGHTS } from './articles/financial-stability-for-cancer-in-2026-fire-horse-investment-insights';
 
 // ==============================================================================
 // 2. REGISTER ALL ARTICLES
 // ==============================================================================
 const ARTICLES_LIST: ArticleMaster[] = [
+  FINANCIAL_STABILITY_FOR_CANCER_IN_2026_FIRE_HORSE_INVESTMENT_INSIGHTS,
   AQUARIUS_2026_FIRE_HORSE_HOROSCOPE_COMPLETE_FORECAST_FOR_CAREER_LOVE,
   LIBRAS_KEY_DECISIONS_2026_STRATEGIC_CHOICES_FOR_BUSINESS_MONEY,
   CAPRICORN_FIRE_HORSE_2026_PREDICTIONS_NAVIGATING_YOUR_PATH_TO_CAREER,
