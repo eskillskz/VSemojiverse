@@ -18,10 +18,11 @@ const getCategoryStyle = (cat: string) => {
   if (c === 'emoji') return 'bg-amber-500 text-white shadow-amber-500/30';
   if (c === 'history') return 'bg-purple-600 text-white shadow-purple-600/30';
   if (c === 'astrology') return 'bg-violet-600 text-white shadow-violet-600/30';
+  if (c === 'seo google') return 'bg-green-600 text-white shadow-green-600/30';
   return 'bg-slate-700 text-white';
 };
 
-const CATEGORIES = ['All', 'Instagram', 'Emoji', 'Business', 'History', 'Astrology'];
+const CATEGORIES = ['All', 'Instagram', 'Emoji', 'Business', 'History', 'Astrology', 'SEO Google'];
 
 const BlogList: React.FC<BlogListProps> = ({ locale, onReadPost, onBackToHome }) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
