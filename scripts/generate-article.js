@@ -31,7 +31,7 @@ if (!rawContent.trim()) {
 
 console.log(`\n📄 Reading input.txt...`);
 
-// ---------- SLUG GENERATION ----------
+// ---------- SLUG ----------
 let slug = process.argv[2];
 if (!slug) {
   let firstLine = rawContent.split('\n').find(l => l.trim() && !l.startsWith('SEO_DESC:'));
@@ -48,12 +48,10 @@ if (!fs.existsSync(articleDir)) fs.mkdirSync(articleDir, { recursive: true });
 const ai = new GoogleGenAI({ apiKey });
 const delay = ms => new Promise(r => setTimeout(r, ms));
 
-// ---------- HELPER: Smart JSON Cleaner & Parser ----------
-// Эта функция спасает скрипт, если Gemini 2.5 забыла закрыть скобку
+// ---------- HELPER: Smart JSON Cleaner ----------
 function cleanAndParseJSON(text) {
   let cleaned = text.trim();
   
-  // Убираем markdown обертку
   if (cleaned.startsWith('```')) {
     cleaned = cleaned.replace(/^```(?:json)?/, '').replace(/```$/, '').trim();
   }
@@ -62,27 +60,25 @@ function cleanAndParseJSON(text) {
     return JSON.parse(cleaned);
   } catch (e) {
     console.warn("⚠️ JSON Parse Warning: Attempting to auto-fix broken JSON...");
-    // Эвристика: если строка обрывается, пробуем закрыть структуры
-    // Часто обрыв бывает в массиве content или в самом конце объекта
     if (cleaned.lastIndexOf('}') < cleaned.lastIndexOf(']')) {
         cleaned += '"]}}'; 
     } else if (cleaned.lastIndexOf('}') === -1) {
         cleaned += '}'; 
     } else if (!cleaned.endsWith('}')) {
-        cleaned += '"}'; // Закрываем строку и объект, если обрыв в значении
+        cleaned += '"}';
     }
     
     try {
         return JSON.parse(cleaned);
     } catch (e2) {
-        throw new Error(`Failed to parse JSON. Raw text start: ${cleaned.substring(0, 50)}...`);
+        throw new Error("Failed to parse JSON even after auto-fix.");
     }
   }
 }
 
-// ---------- STEP 1: Generate Master (English) ----------
+// ---------- STEP 1: Generate Master ----------
 async function generateMaster() {
-  console.log(`🚀 Generating English master content using gemini-2.5-flash...`);
+  console.log(`🚀 Generating English master content (Gemini 2.5 Flash)...`);
 
   const prompt = `
 You are an expert CMS Content Generator.
@@ -92,14 +88,14 @@ INPUT TEXT:
 "${rawContent}"
 
 RULES:
-1. **Model**: You are Gemini 2.5. Be precise and creative.
+1. **Model**: You are Gemini 2.5 Flash. Be precise and creative.
 2. **Content**: Do NOT rewrite meaningful content. Keep it detailed.
 3. **Structure**: Output strictly valid JSON.
 
 CRITICAL VISUAL INSTRUCTIONS:
 
 1. **TABLES (Modern UI)**:
-   - Identify any comparison lists or tabular data.
+   - Identify comparison lists or tabular data.
    - Convert them into a single HTML string inside the content array.
    - **Wrapper**: <div class="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 my-8 shadow-sm">
    - **Table Tag**: <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 bg-white dark:bg-slate-900/50">
@@ -107,7 +103,7 @@ CRITICAL VISUAL INSTRUCTIONS:
    - **Body**: <tbody class="divide-y divide-slate-200 dark:divide-slate-800"> ... <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-300 whitespace-nowrap">
 
 2. **ACCORDIONS / FAQ**:
-   - Look for content explicitly marked with [ACCORDION] ... [/ACCORDION].
+   - Look for content between [ACCORDION] and [/ACCORDION] markers.
    - Convert each Question/Answer pair into this interactive HTML details tag:
    - <details class="group py-4 border-b border-slate-200 dark:border-slate-800 last:border-0"><summary class="flex cursor-pointer items-center justify-between font-bold text-slate-900 dark:text-white list-none"><span>QUESTION_TEXT</span><span class="text-indigo-500 transition group-open:rotate-180"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></summary><div class="mt-3 text-slate-600 dark:text-slate-400 leading-relaxed">ANSWER_TEXT</div></details>
    - Do NOT include the [ACCORDION] markers in the output.
@@ -117,7 +113,7 @@ CRITICAL VISUAL INSTRUCTIONS:
    - Format: "IMAGE: keyword | Alt text"
 
 4. **COVER PROMPT**:
-   - Generate a conceptual prompt for "coverImagePrompt".
+   - Generate a prompt for "coverImagePrompt".
    - Style: "Photorealistic, 8k, cinematic lighting, professional editorial photography".
    - Avoid: "Text, distorted anatomy, extra limbs, cartoon".
 
@@ -144,11 +140,10 @@ OUTPUT JSON FORMAT:
   for (let i = 1; i <= MAX_RETRIES; i++) {
     try {
       const res = await ai.models.generateContent({
-        model: 'gemini-2.5-flash', // Используем запрошенную модель
+        model: 'gemini-2.5-flash', // ИСПОЛЬЗУЕМ 2.5 FLASH
         contents: prompt,
         config: {
             responseMimeType: "application/json",
-            // Увеличиваем лимит токенов для надежности
             generationConfig: { maxOutputTokens: 8192 } 
         }
       });
@@ -188,7 +183,7 @@ ${JSON.stringify(masterContent)}
   for (let i = 1; i <= MAX_RETRIES; i++) {
     try {
       const res = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-2.5-flash', // ИСПОЛЬЗУЕМ 2.5 FLASH
         contents: prompt,
         config: { 
             responseMimeType: "application/json",
@@ -203,7 +198,7 @@ ${JSON.stringify(masterContent)}
     } catch (e) {
       console.warn(`⚠️ ${lang} attempt ${i} failed: ${e.message}`);
       if (i === MAX_RETRIES) return null;
-      await delay(2000);
+      await delay(3000);
     }
   }
 }
@@ -238,15 +233,11 @@ async function main() {
 
     const varName = slug.replace(/-/g, '_').toUpperCase().replace(/[^A-Z0-9_]/g, '');
     
-    // --- Image Generation Logic (Flux Model) ---
+    // --- Image Generation Logic ---
     const rawImgPrompt = master.meta.coverImagePrompt || "abstract background";
-    // Добавляем ключевые слова для реализма и качества
-    const improvedPrompt = `${rawImgPrompt}, professional photography, 8k, highly detailed, realistic texture, cinematic lighting, award winning photo, no text, no distorted limbs`;
-    const encodedPrompt = encodeURIComponent(improvedPrompt);
-    
-    const seed = Math.floor(Math.random() * 1000000);
-    // Используем модель flux для лучшего качества
-    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1200&height=630&nologo=true&seed=${seed}&model=flux`;
+    // Упрощенный URL, чтобы избежать проблем с генерацией
+    const encodedPrompt = encodeURIComponent(`${rawImgPrompt}, realistic, 8k, high quality`);
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1200&height=630&nologo=true`;
 
     fs.writeFileSync(
       path.join(articleDir, 'index.ts'),
