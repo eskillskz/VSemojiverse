@@ -40,11 +40,13 @@ import { SCORPIO_LOVE_AND_RELATIONSHIPS_2026_PASSION_MEETS_INTENSITY } from './a
 import { TAURUS_PARENTING_AND_HOME_LIFE_2026_NAVIGATING_THE_FIRE_HORSE_INFLUENCE } from './articles/taurus-parenting-and-home-life-2026-navigating-the-fire-horse-influence';
 import { MASTERING_PRODUCT_LANDING_PAGE_SEO_IN_2026_20_REALWORLD_PROMOTION_TIPS } from './articles/mastering-product-landing-page-seo-in-2026-20-realworld-promotion-tips';
 import { CONTENT_STRATEGY_SECRETS_5_INSTAGRAM_MARKETING_CASE_STUDIES_REVEALED } from './articles/content-strategy-secrets-5-instagram-marketing-case-studies-revealed';
+import { THE_ULTIMATE_GUIDE_TO_HIRING_A_CONTENT_HEAD_FROM_SOURCING_TO_SCALING_BUSINESS_GROWTH } from './articles/the-ultimate-guide-to-hiring-a-content-head-from-sourcing-to-scaling-business-growth';
 
 // ==============================================================================
 // 2. REGISTER ALL ARTICLES
 // ==============================================================================
 const ARTICLES_LIST: ArticleMaster[] = [
+  THE_ULTIMATE_GUIDE_TO_HIRING_A_CONTENT_HEAD_FROM_SOURCING_TO_SCALING_BUSINESS_GROWTH,
   CONTENT_STRATEGY_SECRETS_5_INSTAGRAM_MARKETING_CASE_STUDIES_REVEALED,
   MASTERING_PRODUCT_LANDING_PAGE_SEO_IN_2026_20_REALWORLD_PROMOTION_TIPS,
   TAURUS_PARENTING_AND_HOME_LIFE_2026_NAVIGATING_THE_FIRE_HORSE_INFLUENCE,

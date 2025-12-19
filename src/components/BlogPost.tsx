@@ -231,18 +231,26 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
                     const keywords = keywordsPart ? keywordsPart.trim() : 'abstract';
                     const altText = altTextPart ? altTextPart.trim() : post.title;
                     
-                    const encodedPrompt = encodeURIComponent(`${keywords}, high quality, realistic`);
-                    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=600&nologo=true`;
+                    // Улучшенный промпт для ВНУТРЕННИХ картинок:
+                    // Добавляем "photorealistic", "no text", "no distortions"
+                    // Используем чуть меньший размер (800x600), чтобы не растягивалось
+                    const encodedPrompt = encodeURIComponent(`${keywords}, photorealistic, professional photography, soft lighting, no text, no distorted face`);
+                    
+                    // Добавляем рандомный seed на основе ID поста + индекса параграфа, чтобы картинки не менялись при ререндере
+                    const seed = (post.id.split('').reduce((a,c)=>a+c.charCodeAt(0),0) + index) % 10000;
+                    
+                    // Используем flux-realism для качества
+                    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=768&nologo=true&seed=${seed}&model=flux-realism`;
 
                     return (
-                        <figure key={index} className="my-10">
+                        <figure key={index} className="my-12">
                             <img 
                                 src={imageUrl} 
                                 alt={altText} 
-                                className="w-full h-auto rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 object-cover max-h-[500px]"
+                                className="w-full max-w-4xl mx-auto h-auto rounded-3xl shadow-xl border border-slate-100 dark:border-slate-800 object-cover"
                                 loading="lazy"
                             />
-                            <figcaption className="text-center text-sm text-slate-500 dark:text-slate-400 mt-2 italic">
+                            <figcaption className="text-center text-sm text-slate-400 dark:text-slate-500 mt-4 italic">
                                 {altText}
                             </figcaption>
                         </figure>

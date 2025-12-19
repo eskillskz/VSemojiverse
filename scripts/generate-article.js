@@ -97,10 +97,10 @@ CRITICAL VISUAL INSTRUCTIONS:
 1. **TABLES (Modern UI)**:
    - Identify comparison lists or tabular data.
    - Convert them into a single HTML string inside the content array.
-   - **Wrapper**: <div class="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 my-8 shadow-sm">
-   - **Table Tag**: <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 bg-white dark:bg-slate-900/50">
-   - **Header**: <thead class="bg-slate-50 dark:bg-slate-800/80"> ... <th class="px-6 py-4 text-left text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-   - **Body**: <tbody class="divide-y divide-slate-200 dark:divide-slate-800"> ... <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-300 whitespace-nowrap">
+   - **Wrapper**: <div class="overflow-hidden rounded-2xl border border-slate-100 dark:border-slate-800 my-10 shadow-lg bg-white dark:bg-slate-900">
+   - **Table Tag**: <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-800">
+   - **Header**: <thead class="bg-slate-50 dark:bg-slate-800/50"> ... <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+   - **Body**: <tbody class="divide-y divide-slate-100 dark:divide-slate-800"> ... <td class="px-6 py-4 text-sm font-medium text-slate-700 dark:text-slate-200">
 
 2. **ACCORDIONS / FAQ**:
    - Look for content between [ACCORDION] and [/ACCORDION] markers.
@@ -113,9 +113,9 @@ CRITICAL VISUAL INSTRUCTIONS:
    - Format: "IMAGE: keyword | Alt text"
 
 4. **COVER PROMPT**:
-   - Generate a concise, conceptual English prompt for "coverImagePrompt".
-   - Keep it under 20 words.
-   - Style: "Photorealistic, 8k, cinematic lighting".
+   - Generate a prompt for "coverImagePrompt".
+   - **MANDATORY STYLE**: "Minimalist 3D glossy icon of [Subject] floating in center, clean soft gradient background, high quality, 8k, instagram aesthetic".
+   - Keep prompt short (under 20 words).
 
 OUTPUT JSON FORMAT:
 {
@@ -233,21 +233,20 @@ async function main() {
 
     const varName = slug.replace(/-/g, '_').toUpperCase().replace(/[^A-Z0-9_]/g, '');
     
-    // --- Image Generation Logic (FIXED) ---
-    let rawImgPrompt = master.meta.coverImagePrompt || "abstract technology background";
+    // --- 1. COVER IMAGE GENERATION ---
+    let rawImgPrompt = master.meta.coverImagePrompt || "abstract technology";
     
-    // 1. Очистка и обрезка промпта (слишком длинные ломают генератор)
-    if (rawImgPrompt.length > 200) {
-        rawImgPrompt = rawImgPrompt.substring(0, 190);
-    }
+    // Обрезаем длину, чтобы не ломался URL
+    if (rawImgPrompt.length > 200) rawImgPrompt = rawImgPrompt.substring(0, 190);
 
-    // 2. Создание безопасного URL
-    const enhancedPrompt = `${rawImgPrompt}, realistic, 8k, professional photography`;
-    const encodedPrompt = encodeURIComponent(enhancedPrompt);
+    const coverPrompt = `${rawImgPrompt}, minimal 3D render, gradient background, soft lighting, 8k, high quality`;
     
-    // 3. Добавление случайного seed и модели flux (это важно для генерации)
+    // !!! ВАЖНОЕ ИСПРАВЛЕНИЕ: заменяем ' на %27, чтобы не ломался TS файл !!!
+    const encodedPrompt = encodeURIComponent(coverPrompt).replace(/'/g, '%27');
+    
     const seed = Math.floor(Math.random() * 1000000);
-    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1200&height=630&nologo=true&seed=${seed}&model=flux-pro`;
+    // Используем model=flux-realism
+    const coverImageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1200&height=630&nologo=true&seed=${seed}&model=flux-realism`;
 
     fs.writeFileSync(
       path.join(articleDir, 'index.ts'),
@@ -256,7 +255,7 @@ ${available.map(l => `import { ${l} } from './${l}';`).join('\n')}
 
 export const ${varName}: ArticleMaster = {
   slug: '${slug}',
-  image: '${imageUrl}',
+  image: '${coverImageUrl}',
   category: '${master.meta.category}',
   gradient: '${master.meta.gradient}',
   locales: {
@@ -267,7 +266,7 @@ export const ${varName}: ArticleMaster = {
     );
 
     console.log(`\n🎉 Article generated successfully: ${slug}`);
-    console.log(`🖼️  Image Link: ${imageUrl}`);
+    console.log(`🖼️  Cover Image: ${coverImageUrl}`);
 
   } catch (e) {
     console.error("\n❌ FATAL ERROR:", e);
