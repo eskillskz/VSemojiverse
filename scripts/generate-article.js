@@ -247,7 +247,7 @@ async function main() {
     
     // 3. Добавление случайного seed и модели flux (это важно для генерации)
     const seed = Math.floor(Math.random() * 1000000);
-    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1200&height=630&nologo=true&seed=${seed}&model=flux`;
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1200&height=630&nologo=true&seed=${seed}&model=flux-pro`;
 
     fs.writeFileSync(
       path.join(articleDir, 'index.ts'),
