@@ -36,11 +36,13 @@ import { LIBRAS_KEY_DECISIONS_2026_STRATEGIC_CHOICES_FOR_BUSINESS_MONEY } from '
 import { AQUARIUS_2026_FIRE_HORSE_HOROSCOPE_COMPLETE_FORECAST_FOR_CAREER_LOVE } from './articles/aquarius-2026-fire-horse-horoscope-complete-forecast-for-career-love';
 import { FINANCIAL_STABILITY_FOR_CANCER_IN_2026_FIRE_HORSE_INVESTMENT_INSIGHTS } from './articles/financial-stability-for-cancer-in-2026-fire-horse-investment-insights';
 import { PISCES_CAREER_HOROSCOPE_2026_NAVIGATING_THE_FIRE_HORSE_ENERGY } from './articles/pisces-career-horoscope-2026-navigating-the-fire-horse-energy';
+import { SCORPIO_LOVE_AND_RELATIONSHIPS_2026_PASSION_MEETS_INTENSITY } from './articles/scorpio-love-and-relationships-2026-passion-meets-intensity';
 
 // ==============================================================================
 // 2. REGISTER ALL ARTICLES
 // ==============================================================================
 const ARTICLES_LIST: ArticleMaster[] = [
+  SCORPIO_LOVE_AND_RELATIONSHIPS_2026_PASSION_MEETS_INTENSITY,
   PISCES_CAREER_HOROSCOPE_2026_NAVIGATING_THE_FIRE_HORSE_ENERGY,
   FINANCIAL_STABILITY_FOR_CANCER_IN_2026_FIRE_HORSE_INVESTMENT_INSIGHTS,
   AQUARIUS_2026_FIRE_HORSE_HOROSCOPE_COMPLETE_FORECAST_FOR_CAREER_LOVE,
