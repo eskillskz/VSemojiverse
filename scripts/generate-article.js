@@ -31,7 +31,7 @@ if (!rawContent.trim()) {
 
 console.log(`\n📄 Reading input.txt...`);
 
-// ---------- SLUG ----------
+// ---------- SLUG GENERATION ----------
 let slug = process.argv[2];
 if (!slug) {
   let firstLine = rawContent.split('\n').find(l => l.trim() && !l.startsWith('SEO_DESC:'));
@@ -113,9 +113,9 @@ CRITICAL VISUAL INSTRUCTIONS:
    - Format: "IMAGE: keyword | Alt text"
 
 4. **COVER PROMPT**:
-   - Generate a prompt for "coverImagePrompt".
-   - Style: "Photorealistic, 8k, cinematic lighting, professional editorial photography".
-   - Avoid: "Text, distorted anatomy, extra limbs, cartoon".
+   - Generate a concise, conceptual English prompt for "coverImagePrompt".
+   - Keep it under 20 words.
+   - Style: "Photorealistic, 8k, cinematic lighting".
 
 OUTPUT JSON FORMAT:
 {
@@ -140,7 +140,7 @@ OUTPUT JSON FORMAT:
   for (let i = 1; i <= MAX_RETRIES; i++) {
     try {
       const res = await ai.models.generateContent({
-        model: 'gemini-2.5-flash', // ИСПОЛЬЗУЕМ 2.5 FLASH
+        model: 'gemini-2.5-flash', 
         contents: prompt,
         config: {
             responseMimeType: "application/json",
@@ -183,7 +183,7 @@ ${JSON.stringify(masterContent)}
   for (let i = 1; i <= MAX_RETRIES; i++) {
     try {
       const res = await ai.models.generateContent({
-        model: 'gemini-2.5-flash', // ИСПОЛЬЗУЕМ 2.5 FLASH
+        model: 'gemini-2.5-flash', 
         contents: prompt,
         config: { 
             responseMimeType: "application/json",
@@ -233,11 +233,21 @@ async function main() {
 
     const varName = slug.replace(/-/g, '_').toUpperCase().replace(/[^A-Z0-9_]/g, '');
     
-    // --- Image Generation Logic ---
-    const rawImgPrompt = master.meta.coverImagePrompt || "abstract background";
-    // Упрощенный URL, чтобы избежать проблем с генерацией
-    const encodedPrompt = encodeURIComponent(`${rawImgPrompt}, realistic, 8k, high quality`);
-    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1200&height=630&nologo=true`;
+    // --- Image Generation Logic (FIXED) ---
+    let rawImgPrompt = master.meta.coverImagePrompt || "abstract technology background";
+    
+    // 1. Очистка и обрезка промпта (слишком длинные ломают генератор)
+    if (rawImgPrompt.length > 200) {
+        rawImgPrompt = rawImgPrompt.substring(0, 190);
+    }
+
+    // 2. Создание безопасного URL
+    const enhancedPrompt = `${rawImgPrompt}, realistic, 8k, professional photography`;
+    const encodedPrompt = encodeURIComponent(enhancedPrompt);
+    
+    // 3. Добавление случайного seed и модели flux (это важно для генерации)
+    const seed = Math.floor(Math.random() * 1000000);
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1200&height=630&nologo=true&seed=${seed}&model=flux`;
 
     fs.writeFileSync(
       path.join(articleDir, 'index.ts'),
@@ -257,7 +267,7 @@ export const ${varName}: ArticleMaster = {
     );
 
     console.log(`\n🎉 Article generated successfully: ${slug}`);
-    console.log(`🖼️  Image Prompt: "${master.meta.coverImagePrompt}"`);
+    console.log(`🖼️  Image Link: ${imageUrl}`);
 
   } catch (e) {
     console.error("\n❌ FATAL ERROR:", e);
