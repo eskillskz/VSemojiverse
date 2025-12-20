@@ -22,7 +22,7 @@ const getCategoryStyle = (cat: string) => {
   return 'bg-slate-700 text-white';
 };
 
-const CATEGORIES = ['All', 'Instagram', 'Emoji', 'Business', 'History', 'Astrology', 'SEO Google'];
+const CATEGORIES = ['All', 'Instagram', 'Emoji', 'Business', 'History', 'Astrology', 'SEO Google', 'Digital Marketing'];
 
 const BlogList: React.FC<BlogListProps> = ({ locale, onReadPost, onBackToHome }) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);

@@ -99,7 +99,7 @@ export interface ArticleContent {
 export interface ArticleMaster {
   slug: string;
   image: string;
-  category: 'Instagram' | 'Emoji' | 'Business' | 'History' | 'Astrology' | 'SEO Google';
+  category: 'Instagram' | 'Emoji' | 'Business' | 'History' | 'Astrology' | 'SEO Google' | 'Digital Marketing';
   gradient?: string;
   locales: Partial<Record<Locale, ArticleContent>>;
 }
