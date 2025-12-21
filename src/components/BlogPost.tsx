@@ -61,7 +61,7 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
     }
   };
 
-  // --- Хелпер для парсинга текста (Ссылки + Жирный + Курсив) ---
+  // --- Улучшенный парсер текста (Ссылки + Жирный + Курсив) ---
   const renderTextWithFormatting = (text: string) => {
     // 1. Разбиваем по ссылкам [Text](Url)
     const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
@@ -78,8 +78,7 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
         );
       }
 
-      // Не ссылка -> ищем жирный (**text**) и курсив (*text*)
-      // Разбиваем по жирному:
+      // Не ссылка -> ищем жирный (**text**)
       const subParts = part.split(/(\*\*[^*]+\*\*)/g);
       
       return subParts.map((subPart, j) => {
@@ -87,9 +86,10 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
           return <strong key={`${i}-${j}`} className="font-bold text-slate-900 dark:text-white">{subPart.slice(2, -2)}</strong>;
         }
         
-        // Разбиваем по курсиву (одиночные звездочки):
+        // Разбиваем по курсиву (*text*):
         return subPart.split(/(\*[^*]+\*)/g).map((tinyPart, k) => {
             if (tinyPart.startsWith('*') && tinyPart.endsWith('*') && tinyPart.length > 2) {
+                // Игнорируем ** если они вдруг остались, обрабатываем только *
                 return <em key={`${i}-${j}-${k}`} className="italic text-slate-800 dark:text-slate-200">{tinyPart.slice(1, -1)}</em>;
             }
             return tinyPart;
@@ -196,19 +196,19 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
                      </div>
                   </div>
                 </div>
-                {/* ------------------------------ */}
-
             </div>
 
             <AdUnit slotId="article-top" />
 
+            {/* --- CONTENT RENDERER --- */}
             <div className="prose dark:prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:text-slate-900 dark:prose-headings:text-white prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-a:text-indigo-600 dark:prose-a:text-indigo-400 hover:prose-a:text-indigo-500 leading-relaxed">
                 {contentArray.length > 0 ? contentArray.map((paragraph, index) => {
                   if (!paragraph) return null;
                   
                   const trimmedBlock = paragraph.trim();
 
-                  // 1. HTML BLOCKS (Tables & Accordions & Lists & Quotes)
+                  // 1. HTML BLOCKS (Tables, Accordions, Lists, Blockquotes)
+                  // Добавлена поддержка <ul>, <ol>, <blockquote>
                   if (trimmedBlock.startsWith('<div') || 
                       trimmedBlock.startsWith('<table') || 
                       trimmedBlock.startsWith('<details') ||
@@ -230,11 +230,11 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
                     const keywords = keywordsPart ? keywordsPart.trim() : 'abstract';
                     const altText = altTextPart ? altTextPart.trim() : post.title;
                     
-                    // Улучшенный промпт: NO PEOPLE, NO TEXT
+                    // Жесткий фильтр: NO PEOPLE, NO TEXT
                     const encodedPrompt = encodeURIComponent(`${keywords}, object only, minimalist, photorealistic, 8k, soft lighting, no text, no letters, no words, no people, no human, no face`);
+                    
                     const seed = (post.id.split('').reduce((a,c)=>a+c.charCodeAt(0),0) + index) % 10000;
                     
-                    // Используем flux-realism для качества
                     const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=768&nologo=true&seed=${seed}&model=flux-realism`;
 
                     return (

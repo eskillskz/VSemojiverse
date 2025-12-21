@@ -97,10 +97,10 @@ CRITICAL VISUAL INSTRUCTIONS:
 1. **TABLES (Modern UI)**:
    - Identify comparison lists or tabular data.
    - Convert them into a single HTML string inside the content array.
-   - **Wrapper**: <div class="overflow-hidden rounded-2xl border border-slate-100 dark:border-slate-800 my-10 shadow-lg bg-white dark:bg-slate-900">
-   - **Table Tag**: <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-800">
+   - **Wrapper**: <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 my-10 shadow-lg bg-white dark:bg-slate-900">
+   - **Table Tag**: <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
    - **Header**: <thead class="bg-slate-50 dark:bg-slate-800/50"> ... <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-   - **Body**: <tbody class="divide-y divide-slate-100 dark:divide-slate-800"> ... <td class="px-6 py-4 text-sm font-medium text-slate-700 dark:text-slate-200">
+   - **Body**: <tbody class="divide-y divide-slate-200 dark:divide-slate-800"> ... <td class="px-6 py-4 text-sm font-medium text-slate-700 dark:text-slate-200">
 
 2. **ACCORDIONS / FAQ**:
    - Look for content between [ACCORDION] and [/ACCORDION] markers.
@@ -108,11 +108,15 @@ CRITICAL VISUAL INSTRUCTIONS:
    - <details class="group py-4 border-b border-slate-200 dark:border-slate-800 last:border-0"><summary class="flex cursor-pointer items-center justify-between font-bold text-slate-900 dark:text-white list-none"><span>QUESTION_TEXT</span><span class="text-indigo-500 transition group-open:rotate-180"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></summary><div class="mt-3 text-slate-600 dark:text-slate-400 leading-relaxed">ANSWER_TEXT</div></details>
    - Do NOT include the [ACCORDION] markers in the output.
 
-3. **IMAGES**:
+3. **LISTS & QUOTES**:
+   - For bullet points, output HTML: <ul><li class="mb-2">...</li></ul>
+   - For blockquotes, output HTML: <blockquote class="border-l-4 ...">...</blockquote>
+
+4. **IMAGES**:
    - Insert 2 to 5 images randomly in the content array.
    - Format: "IMAGE: keyword | Alt text"
 
-4. **COVER PROMPT**:
+5. **COVER PROMPT**:
    - Generate a prompt for "coverImagePrompt".
    - **MANDATORY STYLE**: "Minimalist 3D glossy icon of [Subject] floating in center, clean soft gradient background, high quality, 8k, instagram aesthetic".
    - **STRICTLY FORBIDDEN**: "People, faces, text, letters, words, distorted limbs".
@@ -131,6 +135,7 @@ OUTPUT JSON FORMAT:
       "## Header",
       "<div class='overflow-hidden...'><table>...</table></div>", 
       "<details>...</details>",
+      "<ul><li>...</li></ul>",
       "IMAGE: ..."
     ]
   }
@@ -171,8 +176,8 @@ Translate the following JSON content to language code: "${lang}".
 RULES:
 1. Keep the JSON structure EXACTLY the same.
 2. **DO NOT TRANSLATE HTML TAGS OR CLASSES**.
-   - Keep <div class="...">, <table...>, <details...>, <svg...> EXACTLY as they are.
-   - ONLY translate the human-readable text *inside* the tags.
+   - Keep <div...>, <table...>, <details...>, <ul...>, <blockquote...> EXACTLY as they are.
+   - ONLY translate the visible text content.
 3. Translate paragraphs and headers.
 4. Keep "IMAGE: keyword |" in English, translate only the Alt text part.
 
@@ -240,13 +245,14 @@ async function main() {
     // Обрезаем длину, чтобы не ломался URL
     if (rawImgPrompt.length > 200) rawImgPrompt = rawImgPrompt.substring(0, 190);
 
-    // Добавляем жесткие ограничения: NO PEOPLE, NO TEXT
+    // Жесткие ограничения: NO PEOPLE, NO TEXT
     const coverPrompt = `${rawImgPrompt}, object only, minimal 3D render, gradient background, soft lighting, 8k, high quality, no text, no letters, no people, no human face`;
     
     // Заменяем апострофы
     const encodedPrompt = encodeURIComponent(coverPrompt).replace(/'/g, '%27');
     
     const seed = Math.floor(Math.random() * 1000000);
+    // Используем model=flux-realism
     const coverImageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1200&height=630&nologo=true&seed=${seed}&model=flux-realism`;
 
     fs.writeFileSync(
