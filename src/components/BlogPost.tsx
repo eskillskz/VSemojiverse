@@ -61,39 +61,39 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
     }
   };
 
-  // --- Хелпер для парсинга текста с ссылками и жирным шрифтом ---
-  const renderTextWithLinksAndBold = (text: string) => {
-    // 1. Разбиваем текст на части по ссылкам формата [Текст](Url)
-    // Регулярка захватывает группы: ( [текст](урл) )
+  // --- Хелпер для парсинга текста (Ссылки + Жирный + Курсив) ---
+  const renderTextWithFormatting = (text: string) => {
+    // 1. Разбиваем по ссылкам [Text](Url)
     const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
 
     return parts.map((part, i) => {
-      // Проверяем, является ли часть ссылкой
+      // Ссылка?
       const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-      
       if (linkMatch) {
         const [_, linkText, linkUrl] = linkMatch;
         return (
-          <a 
-            key={i} 
-            href={linkUrl} 
-            className="text-indigo-600 dark:text-indigo-400 hover:underline font-bold transition-colors"
-          >
+          <a key={i} href={linkUrl} className="text-indigo-600 dark:text-indigo-400 hover:underline font-bold transition-colors">
             {linkText}
           </a>
         );
       }
 
-      // Если это не ссылка, обрабатываем жирный текст (**text**)
-      return part.split(/(\*\*[^*]+\*\*)/g).map((subPart, j) => {
+      // Не ссылка -> ищем жирный (**text**) и курсив (*text*)
+      // Разбиваем по жирному:
+      const subParts = part.split(/(\*\*[^*]+\*\*)/g);
+      
+      return subParts.map((subPart, j) => {
         if (subPart.startsWith('**') && subPart.endsWith('**')) {
-          return (
-            <strong key={`${i}-${j}`} className="font-bold text-slate-900 dark:text-white">
-              {subPart.slice(2, -2)}
-            </strong>
-          );
+          return <strong key={`${i}-${j}`} className="font-bold text-slate-900 dark:text-white">{subPart.slice(2, -2)}</strong>;
         }
-        return subPart;
+        
+        // Разбиваем по курсиву (одиночные звездочки):
+        return subPart.split(/(\*[^*]+\*)/g).map((tinyPart, k) => {
+            if (tinyPart.startsWith('*') && tinyPart.endsWith('*') && tinyPart.length > 2) {
+                return <em key={`${i}-${j}-${k}`} className="italic text-slate-800 dark:text-slate-200">{tinyPart.slice(1, -1)}</em>;
+            }
+            return tinyPart;
+        });
       });
     });
   };
@@ -208,8 +208,7 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
                   
                   const trimmedBlock = paragraph.trim();
 
-                  // --- 1. HTML CONTENT (Tables & Accordions & Lists & Quotes) ---
-                  // Checks for blocks starting with HTML tags
+                  // 1. HTML BLOCKS (Tables & Accordions & Lists & Quotes)
                   if (trimmedBlock.startsWith('<div') || 
                       trimmedBlock.startsWith('<table') || 
                       trimmedBlock.startsWith('<details') ||
@@ -225,18 +224,14 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
                     );
                   }
 
-                  // --- 2. IMAGE RENDERING LOGIC ---
+                  // 2. IMAGES (Inside Article)
                   if (paragraph.startsWith('IMAGE:')) {
                     const [keywordsPart, altTextPart] = paragraph.replace('IMAGE:', '').split('|');
                     const keywords = keywordsPart ? keywordsPart.trim() : 'abstract';
                     const altText = altTextPart ? altTextPart.trim() : post.title;
                     
-                    // Улучшенный промпт для ВНУТРЕННИХ картинок:
-                    // Добавляем "photorealistic", "no text", "no distortions"
-                    // Используем чуть меньший размер (800x600), чтобы не растягивалось
-                    const encodedPrompt = encodeURIComponent(`${keywords}, photorealistic, professional photography, soft lighting, no text, no distorted face`);
-                    
-                    // Добавляем рандомный seed на основе ID поста + индекса параграфа, чтобы картинки не менялись при ререндере
+                    // Улучшенный промпт: NO PEOPLE, NO TEXT
+                    const encodedPrompt = encodeURIComponent(`${keywords}, object only, minimalist, photorealistic, 8k, soft lighting, no text, no letters, no words, no people, no human, no face`);
                     const seed = (post.id.split('').reduce((a,c)=>a+c.charCodeAt(0),0) + index) % 10000;
                     
                     // Используем flux-realism для качества
@@ -257,7 +252,7 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
                     );
                   }
 
-                  // --- 3. HEADERS ---
+                  // 3. HEADERS
                   if (paragraph.startsWith('## ')) {
                     return <h2 key={index} className="text-2xl md:text-3xl font-extrabold mt-12 mb-6 text-slate-900 dark:text-white">{paragraph.replace('## ', '')}</h2>;
                   }
@@ -268,22 +263,20 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
                     return <h4 key={index} className="text-lg md:text-xl font-bold mt-6 mb-3 text-slate-800 dark:text-slate-200">{paragraph.replace('#### ', '')}</h4>;
                   }
 
-                  // --- 4. MARKDOWN BLOCKQUOTES ---
+                  // 4. MARKDOWN BLOCKQUOTES
                   if (paragraph.startsWith('> ')) {
                     const quoteText = paragraph.replace('> ', '');
-                    // Render quote with potential links/bold inside
                     return (
                       <blockquote key={index} className="border-l-4 border-indigo-500 pl-4 italic text-slate-700 dark:text-slate-300 my-6 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-r-lg">
-                        {renderTextWithLinksAndBold(quoteText)}
+                        {renderTextWithFormatting(quoteText)}
                       </blockquote>
                     );
                   }
                   
-                  // --- 5. STANDARD PARAGRAPH (with Links & Bold) ---
-                  // Используем наш новый хелпер renderTextWithLinksAndBold вместо старого split
+                  // 5. STANDARD PARAGRAPH
                   return (
                     <p key={index} className="mb-6 leading-relaxed text-slate-600 dark:text-slate-300">
-                        {renderTextWithLinksAndBold(paragraph)}
+                        {renderTextWithFormatting(paragraph)}
                     </p>
                   );
                 }) : (
@@ -295,56 +288,6 @@ const BlogPostView: React.FC<BlogPostProps> = ({ post, onBack, onHome, locale, o
 
         </div>
       </article>
-
-      {/* Recommended Posts Section */}
-      {recommendedPosts.length > 0 && (
-          <div className="mt-20 px-4">
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-2">
-                  <Sparkles className="text-indigo-500" />
-                  {locale === 'ru' ? 'Рекомендуем почитать' : locale === 'es' ? 'Artículos recomendados' : 'Recommended Reading'}
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {recommendedPosts.map((recPost) => (
-                      <div 
-                        key={recPost.id}
-                        onClick={() => onOpenPost && onOpenPost(recPost)}
-                        className="group bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
-                      >
-                          <div className="relative h-32 w-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                              {recPost.category && (
-                                <div className="absolute top-2 left-2 z-20">
-                                   <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider shadow-sm ${getCategoryStyle(recPost.category)}`}>
-                                     {recPost.category}
-                                   </span>
-                                </div>
-                              )}
-                              {recPost.image ? (
-                                <img 
-                                  src={recPost.image} 
-                                  alt={recPost.imageAlt || recPost.title}
-                                  className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300 group-hover:scale-105"
-                                />
-                              ) : (
-                                <div className={`w-full h-full bg-gradient-to-br ${recPost.imageGradient}`}></div>
-                              )}
-                          </div>
-                          <div className="p-6 flex-1 flex flex-col">
-                              <h4 className="font-bold text-lg text-slate-800 dark:text-slate-200 mb-2 line-clamp-2 group-hover:text-indigo-500 transition-colors">
-                                  {recPost.title}
-                              </h4>
-                              <div className="flex items-center justify-between mt-auto pt-4 text-xs text-slate-500">
-                                  <span>{recPost.date}</span>
-                                  <div className="flex items-center text-indigo-600 dark:text-indigo-400 font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                                      Read <ArrowRight size={14} className="ml-1" />
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  ))}
-              </div>
-          </div>
-      )}
 
       <ShareModal 
         isOpen={isShareModalOpen} 

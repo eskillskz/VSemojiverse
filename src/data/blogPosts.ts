@@ -42,11 +42,13 @@ import { MASTERING_PRODUCT_LANDING_PAGE_SEO_IN_2026_20_REALWORLD_PROMOTION_TIPS 
 import { CONTENT_STRATEGY_SECRETS_5_INSTAGRAM_MARKETING_CASE_STUDIES_REVEALED } from './articles/content-strategy-secrets-5-instagram-marketing-case-studies-revealed';
 import { THE_ULTIMATE_GUIDE_TO_HIRING_A_CONTENT_HEAD_FROM_SOURCING_TO_SCALING_BUSINESS_GROWTH } from './articles/the-ultimate-guide-to-hiring-a-content-head-from-sourcing-to-scaling-business-growth';
 import { LOCAL_SEO_SURVIVAL_GETTING_CUSTOMERS_WHEN_AI_SUMMARIZES_YOUR_BUSINESS_WITHOUT_A_LINK } from './articles/local-seo-survival-getting-customers-when-ai-summarizes-your-business-without-a-link';
+import { WHY_YOUR_SEOFRIENDLY_INSTAGRAM_NAME_CHANGE_IS_CONFUSING_FOLLOWERS_AND_KILLING_ENGAGEMENT } from './articles/why-your-seofriendly-instagram-name-change-is-confusing-followers-and-killing-engagement';
 
 // ==============================================================================
 // 2. REGISTER ALL ARTICLES
 // ==============================================================================
 const ARTICLES_LIST: ArticleMaster[] = [
+  WHY_YOUR_SEOFRIENDLY_INSTAGRAM_NAME_CHANGE_IS_CONFUSING_FOLLOWERS_AND_KILLING_ENGAGEMENT,
   LOCAL_SEO_SURVIVAL_GETTING_CUSTOMERS_WHEN_AI_SUMMARIZES_YOUR_BUSINESS_WITHOUT_A_LINK,
   THE_ULTIMATE_GUIDE_TO_HIRING_A_CONTENT_HEAD_FROM_SOURCING_TO_SCALING_BUSINESS_GROWTH,
   CONTENT_STRATEGY_SECRETS_5_INSTAGRAM_MARKETING_CASE_STUDIES_REVEALED,

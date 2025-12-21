@@ -115,6 +115,7 @@ CRITICAL VISUAL INSTRUCTIONS:
 4. **COVER PROMPT**:
    - Generate a prompt for "coverImagePrompt".
    - **MANDATORY STYLE**: "Minimalist 3D glossy icon of [Subject] floating in center, clean soft gradient background, high quality, 8k, instagram aesthetic".
+   - **STRICTLY FORBIDDEN**: "People, faces, text, letters, words, distorted limbs".
    - Keep prompt short (under 20 words).
 
 OUTPUT JSON FORMAT:
@@ -239,13 +240,13 @@ async function main() {
     // Обрезаем длину, чтобы не ломался URL
     if (rawImgPrompt.length > 200) rawImgPrompt = rawImgPrompt.substring(0, 190);
 
-    const coverPrompt = `${rawImgPrompt}, minimal 3D render, gradient background, soft lighting, 8k, high quality`;
+    // Добавляем жесткие ограничения: NO PEOPLE, NO TEXT
+    const coverPrompt = `${rawImgPrompt}, object only, minimal 3D render, gradient background, soft lighting, 8k, high quality, no text, no letters, no people, no human face`;
     
-    // !!! ВАЖНОЕ ИСПРАВЛЕНИЕ: заменяем ' на %27, чтобы не ломался TS файл !!!
+    // Заменяем апострофы
     const encodedPrompt = encodeURIComponent(coverPrompt).replace(/'/g, '%27');
     
     const seed = Math.floor(Math.random() * 1000000);
-    // Используем model=flux-realism
     const coverImageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1200&height=630&nologo=true&seed=${seed}&model=flux-realism`;
 
     fs.writeFileSync(
