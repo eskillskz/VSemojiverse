@@ -1,12 +1,10 @@
-
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 // --- CONFIGURATION ---
-// ВАЖНО: Укажите здесь ваш реальный домен, который будет в Google Search Console
-// Если используете кастомный домен (например, webseotips.com), впишите его сюда вместо netlify
-const BASE_URL = 'https://emojiverse.netlify.app'; 
+// !!! ВАЖНО: Здесь установлен ваш купленный домен
+const BASE_URL = 'https://webseotips.com'; 
 
 const SUPPORTED_LOCALES = [
   'en', 'ru', 'es', 'fr', 'de', 'it', 'pt', 'zh', 'ja', 'ko', 'ar', 'hi', 'kk'
@@ -19,7 +17,6 @@ const articlesDir = path.join(rootDir, 'src', 'data', 'articles');
 const publicDir = path.join(rootDir, 'public');
 
 // --- HELPER: ESCAPE XML SPECIAL CHARS ---
-// Это исправляет ошибку "EntityRef: expecting ';'"
 function escapeXml(unsafe) {
   return unsafe.replace(/[<>&'"]/g, (c) => {
     switch (c) {
@@ -83,7 +80,7 @@ function generateSitemap() {
     <changefreq>daily</changefreq>
     <priority>1.0</priority>`;
 
-    // Add Hreflang links (Cross-referencing all languages including self)
+    // Add Hreflang links
     SUPPORTED_LOCALES.forEach(altLang => {
       const altUrl = buildUrl(altLang);
       xml += `
@@ -93,7 +90,7 @@ function generateSitemap() {
       href="${escapeXml(altUrl)}"/>`;
     });
 
-    // Add x-default (usually maps to English/Main version)
+    // Add x-default
     const defaultUrl = buildUrl('en');
     xml += `
     <xhtml:link 
@@ -115,7 +112,7 @@ function generateSitemap() {
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>`;
 
-      // Add Hreflang links for this specific article
+      // Add Hreflang links
       SUPPORTED_LOCALES.forEach(altLang => {
         const altUrl = buildUrl(altLang, slug);
         xml += `
@@ -125,7 +122,7 @@ function generateSitemap() {
       href="${escapeXml(altUrl)}"/>`;
       });
 
-      // Add x-default for article
+      // Add x-default
       const defaultUrl = buildUrl('en', slug);
       xml += `
     <xhtml:link 
@@ -154,10 +151,9 @@ try {
   
   fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemap);
   console.log(`✅ Sitemap generated successfully!`);
+  console.log(`   - Domain: ${BASE_URL}`);
   console.log(`   - Articles: ${getArticleSlugs().length}`);
-  console.log(`   - Languages: ${SUPPORTED_LOCALES.length}`);
   console.log(`   - File: ${path.join(publicDir, 'sitemap.xml')}`);
-  console.log(`   - XML escaping & Hreflang tags applied.`);
 } catch (error) {
   console.error("❌ Error generating sitemap:", error);
   process.exit(1);
