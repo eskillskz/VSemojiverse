@@ -44,11 +44,13 @@ import { THE_ULTIMATE_GUIDE_TO_HIRING_A_CONTENT_HEAD_FROM_SOURCING_TO_SCALING_BU
 import { LOCAL_SEO_SURVIVAL_GETTING_CUSTOMERS_WHEN_AI_SUMMARIZES_YOUR_BUSINESS_WITHOUT_A_LINK } from './articles/local-seo-survival-getting-customers-when-ai-summarizes-your-business-without-a-link';
 import { WHY_YOUR_SEOFRIENDLY_INSTAGRAM_NAME_CHANGE_IS_CONFUSING_FOLLOWERS_AND_KILLING_ENGAGEMENT } from './articles/why-your-seofriendly-instagram-name-change-is-confusing-followers-and-killing-engagement';
 import { HASHTAGS_VS_SEMANTIC_KEYWORDS_WHICH_STRATEGY_ACTUALLY_LANDS_SMALL_ACCOUNTS_ON_THE_EXPLORE_PAGE } from './articles/hashtags-vs-semantic-keywords-which-strategy-actually-lands-small-accounts-on-the-explore-page';
+import { PROVEN_SEO_BEST_PRACTICES_FOR_HIGHPERFORMING_LANDING_PAGES } from './articles/proven-seo-best-practices-for-highperforming-landing-pages';
 
 // ==============================================================================
 // 2. REGISTER ALL ARTICLES
 // ==============================================================================
 const ARTICLES_LIST: ArticleMaster[] = [
+  PROVEN_SEO_BEST_PRACTICES_FOR_HIGHPERFORMING_LANDING_PAGES,
   HASHTAGS_VS_SEMANTIC_KEYWORDS_WHICH_STRATEGY_ACTUALLY_LANDS_SMALL_ACCOUNTS_ON_THE_EXPLORE_PAGE,
   WHY_YOUR_SEOFRIENDLY_INSTAGRAM_NAME_CHANGE_IS_CONFUSING_FOLLOWERS_AND_KILLING_ENGAGEMENT,
   LOCAL_SEO_SURVIVAL_GETTING_CUSTOMERS_WHEN_AI_SUMMARIZES_YOUR_BUSINESS_WITHOUT_A_LINK,
