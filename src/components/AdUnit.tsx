@@ -1,8 +1,7 @@
-
 import React, { useEffect, useRef } from 'react';
 
 interface AdUnitProps {
-  slotId: string;
+  slotId: string; // Это ID конкретного рекламного блока (создается в кабинете AdSense)
   format?: 'auto' | 'fluid' | 'rectangle';
   responsive?: boolean;
   className?: string;
@@ -20,6 +19,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
 
   useEffect(() => {
     try {
+      // Эта проверка нужна, чтобы скрипт не падал, если AdBlock заблокировал рекламу
       if (typeof window !== 'undefined') {
         ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
       }
@@ -33,7 +33,7 @@ const AdUnit: React.FC<AdUnitProps> = ({
       <ins
         className="adsbygoogle"
         style={style}
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" 
+        data-ad-client="ca-pub-8127920009021020" 
         data-ad-slot={slotId}
         data-ad-format={format}
         data-full-width-responsive={responsive ? "true" : "false"}

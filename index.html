@@ -3,9 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- 1. Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NQHNV1QMT4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NQHNV1QMT4');
+    </script>
+
+    <!-- 2. Google AdSense (Обязательно для работы AdUnit.tsx) -->
+    <script 
+      async 
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8127920009021020"
+      crossorigin="anonymous">
+    </script>
+
     <title>EmojiVerse</title>
     
-    <!-- Tailwind CSS (CDN для быстрого старта) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -28,27 +46,28 @@
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.2/",
-    "react/": "https://esm.sh/react@^19.2.2/",
-    "react": "https://esm.sh/react@^19.2.2",
-    "fs": "https://esm.sh/fs@^0.0.1-security",
-    "dotenv": "https://esm.sh/dotenv@^17.2.3",
-    "lucide-react": "https://esm.sh/lucide-react@^0.560.0",
-    "path": "https://esm.sh/path@^0.12.7",
-    "url": "https://esm.sh/url@^0.11.4",
-    "vite": "https://esm.sh/vite@^7.2.7",
-    "@google/genai": "https://esm.sh/@google/genai@^1.33.0",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
-  }
-}
-</script>
-</head>
+
+    <script type="importmap">
+    {
+      "imports": {
+        "react-dom/": "https://esm.sh/react-dom@^19.2.2/",
+        "react/": "https://esm.sh/react@^19.2.2/",
+        "react": "https://esm.sh/react@^19.2.2",
+        "fs": "https://esm.sh/fs@^0.0.1-security",
+        "dotenv": "https://esm.sh/dotenv@^17.2.3",
+        "lucide-react": "https://esm.sh/lucide-react@^0.560.0",
+        "path": "https://esm.sh/path@^0.12.7",
+        "url": "https://esm.sh/url@^0.11.4",
+        "vite": "https://esm.sh/vite@^7.2.7",
+        "@google/genai": "https://esm.sh/@google/genai@^1.33.0",
+        "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+      }
+    }
+    </script>
+  </head>
   <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-200 antialiased transition-colors duration-300">
     <div id="root"></div>
-    <!-- ВАЖНО: Путь к файлу теперь просто /index.tsx, так как он лежит в корне -->
+    <!-- Путь к главному файлу React -->
     <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>
