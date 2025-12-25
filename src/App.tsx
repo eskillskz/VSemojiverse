@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { fetchEmojis } from '@/services/emojiService';
 import { EmojiGroup, EmojiRaw, Locale, BlogPost, LOCALE_DATA } from '@/types';
@@ -110,7 +109,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const pagePath = window.location.pathname + window.location.search;
     if (typeof window.gtag === 'function') {
-      window.gtag('config', 'G-XXXXXXXXXX', {
+      window.gtag('config', 'G-NQHNV1QMT4', {
         page_path: pagePath
       });
     }
@@ -291,7 +290,7 @@ const App: React.FC = () => {
   if (viewState === 'article' && currentPost) {
     renderSEOHead = (
       <SEOHead 
-        title={`${currentPost.seoTitle || currentPost.title} - EmojiVerse`}
+        title={`${currentPost.seoTitle || currentPost.title} - WebSEOTips`}
         description={currentPost.seoDescription || currentPost.excerpt}
         image={currentPost.image}
         type="article"
@@ -302,7 +301,7 @@ const App: React.FC = () => {
   } else if (viewState === 'blog') {
     renderSEOHead = (
       <SEOHead 
-        title={`EmojiVerse Blog - Stories & History (${locale.toUpperCase()})`}
+        title={`WebSEOTips Blog - Stories & History (${locale.toUpperCase()})`}
         description={seoContent.metaDescription}
         currentLocale={locale}
       />
@@ -484,7 +483,7 @@ const App: React.FC = () => {
       />
       
       <footer className="text-center py-10 text-slate-400 dark:text-slate-600 text-sm mb-8 md:mb-0 border-t border-slate-200 dark:border-white/5 mt-8 relative z-10">
-        <p>© {new Date().getFullYear()} EmojiVerse. {UI_LABELS[locale]?.footer}</p>
+        <p>© {new Date().getFullYear()} WebSEOTips. {UI_LABELS[locale]?.footer}</p>
       </footer>
     </div>
   );

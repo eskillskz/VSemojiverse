@@ -1,4 +1,3 @@
-
 import { Locale } from '../types';
 
 interface SEOData {
@@ -18,34 +17,34 @@ type TabData = Record<'emoji' | 'kaomoji' | 'translit' | 'capslock', SEOData>;
 
 const EN_CONTENT: TabData = {
   emoji: {
-    appTitle: "EmojiVerse - Word Counter, Emoji Picker & Social Editor",
+    appTitle: "WebSEOTips - Word Counter, Emoji Picker & Social Editor",
     metaDescription: "Free online Emoji Picker, Word Counter, and Character Counter. Check Instagram caption limits, copy emojis, and format text for social media.",
     mainHeading: "The Ultimate Emoji & Text Editor",
     subHeading: "Type, count words, format fonts, and find emojis in any language.",
     aboutTitle: "More Than Just Emojis",
     aboutText: [
-      "Welcome to EmojiVerse, your all-in-one workspace for crafting the perfect social media posts. While we started as a comprehensive emoji library, we realized content creators needed more. That's why we built a powerful text editing suite right into the browser.",
+      "Welcome to WebSEOTips, your all-in-one workspace for crafting the perfect social media posts. While we started as a comprehensive emoji library, we realized content creators needed more. That's why we built a powerful text editing suite right into the browser.",
       "Whether you are drafting an Instagram caption, writing a tweet, or composing an email, clarity matters. Our integrated **Word Counter** and **Character Counter** update in real-time, ensuring you hit your targets without guessing. We specifically included an **Instagram Limit Checker** (2,200 chars) so you never get cut off mid-sentence again.",
       "We believe in breaking language barriers. Our unique search engine allows you to find emojis using keywords in over 13 languages. Plus, with our new 'Magic Fonts' feature, you can transform boring text into bold, italic, or decorative styles to make your bio stand out."
     ],
     faqTitle: "Frequently Asked Questions",
     faqIntro: "Everything you need to know about using our text tools, counters, and emoji library.",
     faq: [
-      { q: "Does this tool count words and characters?", a: "Yes! EmojiVerse is a fully functional Word Counter and Character Counter. As you type in the text area, look for the statistics bar just above the emoji list." },
+      { q: "Does this tool count words and characters?", a: "Yes! WebSEOTips is a fully functional Word Counter and Character Counter. As you type in the text area, look for the statistics bar just above the emoji list." },
       { q: "How does the Instagram Limit checker work?", a: "Instagram captions are limited to 2,200 characters. Our tool has a dedicated 'IG Limit' indicator that counts down as you type." },
-      { q: "Is this service completely free?", a: "Absolutely. EmojiVerse is 100% free to use. We don't require registration, we don't charge subscriptions, and there are no hidden fees." },
+      { q: "Is this service completely free?", a: "Absolutely. WebSEOTips is 100% free to use. We don't require registration, we don't charge subscriptions, and there are no hidden fees." },
       { q: "Can I search for emojis in my native language?", a: "Yes, whether you speak Spanish, Russian, Japanese, or Arabic, you can type keywords in your own language into the search bar." },
       { q: "Does the app save my text?", a: "For your privacy, we do not store your text on our servers. However, we use your browser's local storage to save your 'Favorites' and 'Recently Used' emojis." },
       { q: "How do I change the font style?", a: "Click the 'Instagram Fonts' (or Magic Wand) button in the text editor. A menu will appear letting you convert your normal text into Bold, Italic, or Gothic." },
-      { q: "Does it work on mobile phones?", a: "Yes, EmojiVerse is designed as a Progressive Web App (PWA). It works perfectly on iPhones, iPads, and Android devices." },
-      { q: "Can I copy multiple emojis at once?", a: "Yes. Unlike other pickers that copy one by one, EmojiVerse lets you build a whole sentence or a string of emojis in the editor and copy them all at once." },
+      { q: "Does it work on mobile phones?", a: "Yes, WebSEOTips is designed as a Progressive Web App (PWA). It works perfectly on iPhones, iPads, and Android devices." },
+      { q: "Can I copy multiple emojis at once?", a: "Yes. Unlike other pickers that copy one by one, WebSEOTips lets you build a whole sentence or a string of emojis in the editor and copy them all at once." },
       { q: "What browsers are supported?", a: "We support all modern browsers including Chrome, Safari, Firefox, Edge, and Opera." },
-      { q: "Why use this instead of my phone keyboard?", a: "Phone keyboards are small and limited. EmojiVerse gives you a full-screen view, lets you count characters, and check limits." }
+      { q: "Why use this instead of my phone keyboard?", a: "Phone keyboards are small and limited. WebSEOTips gives you a full-screen view, lets you count characters, and check limits." }
     ],
     keywords: ["Word Counter", "Character Counter", "Online Text Editor", "Instagram Caption Limit", "Emoji Picker", "Social Media Tool", "Copy Paste Emojis", "Font Generator", "Instagram Fonts", "Symbol Counter", "Unicode Characters", "IG Bio Fonts"]
   },
   kaomoji: {
-    appTitle: "EmojiVerse - Kaomoji & Japanese Emoticons Library",
+    appTitle: "WebSEOTips - Kaomoji & Japanese Emoticons Library",
     metaDescription: "Huge collection of Japanese Kaomoji, text faces, and emoticons. Copy cute, sad, angry, and happy text faces for Discord, TikTok and Gaming.",
     mainHeading: "Japanese Kaomoji & Text Faces",
     subHeading: "Express yourself with thousands of cute, text-based Japanese emoticons.",
@@ -68,7 +67,7 @@ const EN_CONTENT: TabData = {
     keywords: ["Kaomoji", "Japanese Emoticons", "Text Faces", "Lenny Face", "Cute Text Symbols", "Discord Emotes", "Twitch Chat Faces", "Table Flip Text", "Shrug Emoji Text", "Dongers", "ASCII Art", "Anime Emoticons"]
   },
   translit: {
-    appTitle: "EmojiVerse - SEO Transliteration & Slug Generator",
+    appTitle: "WebSEOTips - SEO Transliteration & Slug Generator",
     metaDescription: "Convert Cyrillic and international text to SEO-friendly Latin URLs. Supports Google and Yandex transliteration standards for webmasters.",
     mainHeading: "SEO URL & Transliteration Tool",
     subHeading: "Generate clean, SEO-optimized URLs for your articles and pages instantly.",
@@ -91,7 +90,7 @@ const EN_CONTENT: TabData = {
     keywords: ["Translit Generator", "SEO Slug Maker", "URL Converter", "Cyrillic to Latin", "Yandex SEO", "Google Friendly URLs", "Slugify Online", "Transliteration Tool", "Russian to English SEO", "Webmaster Tools", "Link Generator", "Clean URLs"]
   },
   capslock: {
-    appTitle: "EmojiVerse - Case Converter & Caps Lock Fixer",
+    appTitle: "WebSEOTips - Case Converter & Caps Lock Fixer",
     metaDescription: "Convert text case instantly. Switch between UPPERCASE, lowercase, Title Case, Sentence case, and Alternating case online.",
     mainHeading: "The Ultimate Case Converter",
     subHeading: "Fix accidental Caps Lock and format your text styles in seconds.",
@@ -117,34 +116,34 @@ const EN_CONTENT: TabData = {
 
 const RU_CONTENT: TabData = {
   emoji: {
-    appTitle: "EmojiVerse - Счетчик Слов, Символов и Эмодзи",
+    appTitle: "WebSEOTips - Счетчик Слов, Символов и Эмодзи",
     metaDescription: "Бесплатный онлайн редактор. Счетчик слов и символов, проверка лимитов Инстаграм, красивые шрифты и коллекция эмодзи.",
     mainHeading: "Ваш Идеальный Текстовый Редактор",
     subHeading: "Печатайте, считайте слова, меняйте шрифты и находите эмодзи мгновенно.",
     aboutTitle: "Больше, чем просто смайлики",
     aboutText: [
-      "Добро пожаловать в EmojiVerse — вашу универсальную творческую студию для социальных сетей. Мы начинали как библиотека эмодзи, но поняли, что авторам контента нужно больше. Поэтому мы создали мощный текстовый редактор прямо в браузере.",
+      "Добро пожаловать в WebSEOTips — вашу универсальную творческую студию для социальных сетей. Мы начинали как библиотека эмодзи, но поняли, что авторам контента нужно больше. Поэтому мы создали мощный текстовый редактор прямо в браузере.",
       "Пишете ли вы пост для Instagram, статью в блог или сообщение в Telegram — объем имеет значение. Наш встроенный **Счетчик Слов** и **Счетчик Символов** работают в реальном времени. Мы также добавили специальный **Индикатор лимита Instagram** (2200 знаков), чтобы ваш текст никогда не обрезался на самом интересном месте.",
       "Мы стираем языковые барьеры. Наш умный поиск позволяет находить эмодзи, вводя слова на русском, английском и еще 12 языках. А с новой функцией «Instagram Шрифты» вы можете превратить скучный текст в жирный, курсив или готический, чтобы выделить свой профиль."
     ],
     faqTitle: "Часто задаваемые вопросы",
     faqIntro: "Всё, что нужно знать о работе с текстом, счетчиками и нашей библиотекой.",
     faq: [
-      { q: "Есть ли здесь счетчик слов и символов?", a: "Да! EmojiVerse — это полноценный инструмент для подсчета слов и знаков. Посмотрите на панель статистики над списком эмодзи." },
+      { q: "Есть ли здесь счетчик слов и символов?", a: "Да! WebSEOTips — это полноценный инструмент для подсчета слов и знаков. Посмотрите на панель статистики над списком эмодзи." },
       { q: "Как работает проверка лимита Instagram?", a: "В постах Instagram есть ограничение в 2200 символов. Наш инструмент содержит индикатор «IG Limit», который ведет обратный отсчет." },
-      { q: "Это бесплатно?", a: "Абсолютно. EmojiVerse на 100% бесплатен. Мы не требуем регистрации и не вводим скрытых платежей." },
+      { q: "Это бесплатно?", a: "Абсолютно. WebSEOTips на 100% бесплатен. Мы не требуем регистрации и не вводим скрытых платежей." },
       { q: "Могу ли я искать эмодзи на русском языке?", a: "Да, это наша гордость. Вы можете вводить запросы на русском (например, «кот», «улыбка», «флаг»), и наша система поймет вас, даже если интерфейс включен на другом языке." },
       { q: "Сохраняется ли мой текст?", a: "Мы заботимся о приватности и не сохраняем ваш текст на наших серверах. Мы используем память браузера только для истории." },
       { q: "Как изменить шрифт для Инстаграм?", a: "Нажмите кнопку «Шрифты Инстаграм» (или волшебную палочку). Откроется меню, где вы сможете выбрать стиль." },
-      { q: "Работает ли это на телефоне?", a: "Да, EmojiVerse работает как приложение (PWA). Оно отлично адаптировано для iPhone и Android." },
+      { q: "Работает ли это на телефоне?", a: "Да, WebSEOTips работает как приложение (PWA). Оно отлично адаптировано для iPhone и Android." },
       { q: "Можно ли скопировать сразу много смайлов?", a: "Конечно. Вы можете составить целое предложение или узор из смайлов в редакторе." },
       { q: "Какие браузеры поддерживаются?", a: "Мы поддерживаем все современные браузеры: Chrome, Safari, Yandex Browser, Firefox и Opera." },
-      { q: "Зачем это нужно, если есть клавиатура в телефоне?", a: "Клавиатура телефона мала. EmojiVerse дает полный обзор всех категорий на одном экране." }
+      { q: "Зачем это нужно, если есть клавиатура в телефоне?", a: "Клавиатура телефона мала. WebSEOTips дает полный обзор всех категорий на одном экране." }
     ],
     keywords: ["Счетчик слов", "Счетчик символов", "Символы для инстаграм", "Лимит знаков инстаграм", "Эмодзи клавиатура", "Красивые шрифты", "Жирный шрифт инстаграм", "Посчитать слова онлайн", "Редактор постов", "Копировать смайлики", "Генератор шрифтов", "Инстаграм био"]
   },
   kaomoji: {
-    appTitle: "EmojiVerse - Библиотека Каомодзи и Японских Смайлов",
+    appTitle: "WebSEOTips - Библиотека Каомодзи и Японских Смайлов",
     metaDescription: "Огромная коллекция японских каомодзи и текстовых смайликов. Копируйте милые, грустные и веселые лица для Discord и ВК.",
     mainHeading: "Японские Каомодзи и Текстовые Лица",
     subHeading: "Выражайте эмоции с помощью тысяч милых японских смайликов.",
@@ -167,7 +166,7 @@ const RU_CONTENT: TabData = {
     keywords: ["Каомодзи", "Японские смайлы", "Текстовые лица", "Смайлы из символов", "Discord смайлы", "Аниме смайлики", "Ленни фейс", "Перевернуть стол", "Смайл пожимает плечами", "ASCII арт", "Смайлики для ВК", "Красивые символы"]
   },
   translit: {
-    appTitle: "EmojiVerse - SEO Транслитерация и Генератор URL",
+    appTitle: "WebSEOTips - SEO Транслитерация и Генератор URL",
     metaDescription: "Перевод кириллицы в латиницу для SEO. Генератор правильных ссылок (ЧПУ) по стандартам Яндекс и Google.",
     mainHeading: "SEO Транслит и Генератор Ссылок",
     subHeading: "Создавайте чистые, оптимизированные URL для ваших статей мгновенно.",
@@ -190,7 +189,7 @@ const RU_CONTENT: TabData = {
     keywords: ["Транслит онлайн", "Генератор ЧПУ", "Перевод в транслит", "Кириллица в латиницу", "SEO ссылки", "Яндекс транслит", "Google транслитерация", "Создание slug", "Транслит для сайта", "Инструменты вебмастера", "Правильные ссылки", "URL конвертер"]
   },
   capslock: {
-    appTitle: "EmojiVerse - Конвертер Регистра и Caps Lock",
+    appTitle: "WebSEOTips - Конвертер Регистра и Caps Lock",
     metaDescription: "Мгновенная смена регистра текста. Перевод в ВЕРХНИЙ, нижний, Заглавный и Чередующийся регистр онлайн.",
     mainHeading: "Универсальный Конвертер Регистра",
     subHeading: "Исправьте случайный Caps Lock и отформатируйте текст за секунды.",
@@ -216,20 +215,20 @@ const RU_CONTENT: TabData = {
 
 const ES_CONTENT: TabData = {
   emoji: {
-    appTitle: "EmojiVerse - Contador de Palabras y Emojis",
+    appTitle: "WebSEOTips - Contador de Palabras y Emojis",
     metaDescription: "Selector de emojis online gratis, contador de palabras y caracteres. Verifica límites de Instagram, copia emojis y da formato al texto.",
     mainHeading: "El Editor de Texto y Emojis Definitivo",
     subHeading: "Escribe, cuenta palabras, cambia fuentes y encuentra emojis en cualquier idioma.",
     aboutTitle: "Más que simples emojis",
     aboutText: [
-      "Bienvenido a EmojiVerse, tu espacio creativo todo en uno. Comenzamos como una biblioteca de emojis, pero nos dimos cuenta de que los creadores necesitaban más. Por eso creamos una potente suite de edición de texto.",
+      "Bienvenido a WebSEOTips, tu espacio creativo todo en uno. Comenzamos como una biblioteca de emojis, pero nos dimos cuenta de que los creadores necesitaban más. Por eso creamos una potente suite de edición de texto.",
       "Ya sea para Instagram, Twitter o un blog, la precisión importa. Nuestro **Contador de Palabras** y **Caracteres** funciona en tiempo real. Incluimos un verificador de **Límite de Instagram** (2.200 caracteres) para que nunca te corten.",
       "Rompemos barreras. Nuestro motor de búsqueda encuentra emojis en más de 13 idiomas. Además, con 'Fuentes Mágicas', puedes transformar texto en negrita o cursiva."
     ],
     faqTitle: "Preguntas Frecuentes",
     faqIntro: "Todo lo que necesitas saber sobre nuestras herramientas.",
     faq: [
-      { q: "¿Esta herramienta cuenta palabras?", a: "¡Sí! EmojiVerse es un contador completo. La barra de estadísticas se actualiza al instante." },
+      { q: "¿Esta herramienta cuenta palabras?", a: "¡Sí! WebSEOTips es un contador completo. La barra de estadísticas se actualiza al instante." },
       { q: "¿Cómo funciona el límite de Instagram?", a: "El indicador 'IG Limit' cuenta regresivamente desde 2.200 caracteres y te avisa si te pasas." },
       { q: "¿Es totalmente gratuito?", a: "Sí, 100% gratuito, sin registro ni tasas ocultas." },
       { q: "¿Puedo buscar emojis en español?", a: "Sí, puedes escribir palabras clave en español y nuestro sistema te entenderá." },
@@ -238,12 +237,12 @@ const ES_CONTENT: TabData = {
       { q: "¿Funciona en móviles?", a: "Sí, es una Web App Progresiva (PWA) optimizada para iPhone y Android." },
       { q: "¿Puedo copiar varios emojis?", a: "Sí. Puedes crear frases enteras en el editor y copiarlas de una vez." },
       { q: "¿Qué navegadores soportan?", a: "Soportamos todos los navegadores modernos: Chrome, Safari, Firefox, Edge." },
-      { q: "¿Por qué usar esto y no el teclado?", a: "El teclado es limitado. EmojiVerse ofrece pantalla completa, conteo de caracteres y fuentes especiales." }
+      { q: "¿Por qué usar esto y no el teclado?", a: "El teclado es limitado. WebSEOTips ofrece pantalla completa, conteo de caracteres y fuentes especiales." }
     ],
     keywords: ["Contador de palabras", "Contador de caracteres", "Límite Instagram", "Editor de texto online", "Teclado Emoji", "Fuentes para Instagram", "Letras bonitas", "Generador de fuentes", "Copiar pegar emojis", "Emojis para bio", "Caracteres unicode", "Leyendas para fotos"]
   },
   kaomoji: {
-    appTitle: "EmojiVerse - Biblioteca de Kaomojis y Emoticonos",
+    appTitle: "WebSEOTips - Biblioteca de Kaomojis y Emoticonos",
     metaDescription: "Gran colección de Kaomojis japoneses y caras de texto. Copia emoticonos lindos, tristes y enojados para Discord y TikTok.",
     mainHeading: "Kaomojis Japoneses y Caras de Texto",
     subHeading: "Exprésate con miles de emoticonos japoneses basados en texto.",
@@ -266,7 +265,7 @@ const ES_CONTENT: TabData = {
     keywords: ["Kaomoji", "Emoticonos japoneses", "Caras de texto", "Lenny Face", "Símbolos lindos", "Emotes Discord", "Caras para Twitch", "Voltear mesa", "Arte ASCII", "Emoticonos anime", "Texto kawaii", "Símbolos de texto"]
   },
   translit: {
-    appTitle: "EmojiVerse - Transliteración SEO y Generador de URL",
+    appTitle: "WebSEOTips - Transliteración SEO y Generador de URL",
     metaDescription: "Convierte texto a URLs latinas amigables con SEO. Soporta estándares de Google y Yandex.",
     mainHeading: "Herramienta de Transliteración SEO",
     subHeading: "Genera URLs limpias y optimizadas para tus artículos al instante.",
@@ -289,7 +288,7 @@ const ES_CONTENT: TabData = {
     keywords: ["Generador Translit", "Creador de Slugs", "Convertidor URL", "Cirílico a Latino", "SEO Yandex", "URLs amigables", "Slugify Online", "Herramienta SEO", "Webmaster", "Generador de enlaces", "URLs limpias", "Optimización URL"]
   },
   capslock: {
-    appTitle: "EmojiVerse - Convertidor de Mayúsculas",
+    appTitle: "WebSEOTips - Convertidor de Mayúsculas",
     metaDescription: "Cambia mayúsculas y minúsculas al instante. Convierte a Título, Oración o Alternado online.",
     mainHeading: "El Convertidor de Texto Definitivo",
     subHeading: "Arregla el bloqueo de mayúsculas y da formato a tu texto en segundos.",

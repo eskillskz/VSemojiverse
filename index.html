@@ -4,7 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- 1. Google Analytics (GA4) -->
+    <!-- 1. ИКОНКА САЙТА (Favicon) -->
+    <!-- Убедитесь, что файл favicon.svg лежит в папке /public -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" href="/favicon.ico" />
+
+    <!-- 2. Google Analytics (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-NQHNV1QMT4"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -14,14 +19,15 @@
       gtag('config', 'G-NQHNV1QMT4');
     </script>
 
-    <!-- 2. Google AdSense (Обязательно для работы AdUnit.tsx) -->
+    <!-- 3. Google AdSense -->
     <script 
       async 
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8127920009021020"
       crossorigin="anonymous">
     </script>
 
-    <title>EmojiVerse</title>
+    <!-- 4. ЗАГОЛОВОК СТРАНИЦЫ -->
+    <title>WebSEOTips</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -67,7 +73,6 @@
   </head>
   <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-200 antialiased transition-colors duration-300">
     <div id="root"></div>
-    <!-- Путь к главному файлу React -->
     <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>
