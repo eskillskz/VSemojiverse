@@ -46,11 +46,13 @@ import { WHY_YOUR_SEOFRIENDLY_INSTAGRAM_NAME_CHANGE_IS_CONFUSING_FOLLOWERS_AND_K
 import { HASHTAGS_VS_SEMANTIC_KEYWORDS_WHICH_STRATEGY_ACTUALLY_LANDS_SMALL_ACCOUNTS_ON_THE_EXPLORE_PAGE } from './articles/hashtags-vs-semantic-keywords-which-strategy-actually-lands-small-accounts-on-the-explore-page';
 import { PROVEN_SEO_BEST_PRACTICES_FOR_HIGHPERFORMING_LANDING_PAGES } from './articles/proven-seo-best-practices-for-highperforming-landing-pages';
 import { STRATEGIES_FOR_MANAGING_SEO_ACROSS_LANDING_PAGES_AND_MAIN_WEBSITES } from './articles/strategies-for-managing-seo-across-landing-pages-and-main-websites';
+import { WHY_YOUR_HASHTAG_STRATEGY_FOR_INSTAGRAM_REELS_NEEDS_TO_CHANGE_IN_2026 } from './articles/why-your-hashtag-strategy-for-instagram-reels-needs-to-change-in-2026';
 
 // ==============================================================================
 // 2. REGISTER ALL ARTICLES
 // ==============================================================================
 const ARTICLES_LIST: ArticleMaster[] = [
+  WHY_YOUR_HASHTAG_STRATEGY_FOR_INSTAGRAM_REELS_NEEDS_TO_CHANGE_IN_2026,
   STRATEGIES_FOR_MANAGING_SEO_ACROSS_LANDING_PAGES_AND_MAIN_WEBSITES,
   PROVEN_SEO_BEST_PRACTICES_FOR_HIGHPERFORMING_LANDING_PAGES,
   HASHTAGS_VS_SEMANTIC_KEYWORDS_WHICH_STRATEGY_ACTUALLY_LANDS_SMALL_ACCOUNTS_ON_THE_EXPLORE_PAGE,
