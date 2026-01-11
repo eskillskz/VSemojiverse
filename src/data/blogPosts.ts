@@ -47,11 +47,13 @@ import { HASHTAGS_VS_SEMANTIC_KEYWORDS_WHICH_STRATEGY_ACTUALLY_LANDS_SMALL_ACCOU
 import { PROVEN_SEO_BEST_PRACTICES_FOR_HIGHPERFORMING_LANDING_PAGES } from './articles/proven-seo-best-practices-for-highperforming-landing-pages';
 import { STRATEGIES_FOR_MANAGING_SEO_ACROSS_LANDING_PAGES_AND_MAIN_WEBSITES } from './articles/strategies-for-managing-seo-across-landing-pages-and-main-websites';
 import { WHY_YOUR_HASHTAG_STRATEGY_FOR_INSTAGRAM_REELS_NEEDS_TO_CHANGE_IN_2026 } from './articles/why-your-hashtag-strategy-for-instagram-reels-needs-to-change-in-2026';
+import { EFFECTIVE_WAYS_TO_AUDIT_YOUR_WEBSITE_FOR_FREE_SEO_IMPROVEMENTS } from './articles/effective-ways-to-audit-your-website-for-free-seo-improvements';
 
 // ==============================================================================
 // 2. REGISTER ALL ARTICLES
 // ==============================================================================
 const ARTICLES_LIST: ArticleMaster[] = [
+  EFFECTIVE_WAYS_TO_AUDIT_YOUR_WEBSITE_FOR_FREE_SEO_IMPROVEMENTS,
   WHY_YOUR_HASHTAG_STRATEGY_FOR_INSTAGRAM_REELS_NEEDS_TO_CHANGE_IN_2026,
   STRATEGIES_FOR_MANAGING_SEO_ACROSS_LANDING_PAGES_AND_MAIN_WEBSITES,
   PROVEN_SEO_BEST_PRACTICES_FOR_HIGHPERFORMING_LANDING_PAGES,
